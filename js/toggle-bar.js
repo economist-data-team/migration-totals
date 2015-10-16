@@ -1,20 +1,6 @@
 import React from 'react';
+import Option from './toggle-option.js';
 import { Im } from './utilities.js';
-
-class Option extends React.Component {
-  constructor() {
-    super(...arguments);
-    this.clickAction = this.clickAction.bind(this);
-  }
-  clickAction() {
-    this.props.action(this.props.value);
-  }
-  render() {
-    var classes = ['tab'];
-    if(this.props.active) { classes.push('active-tab'); }
-    return(<li className={classes.join(' ')} onClick={this.clickAction}>{this.props.title}</li>);
-  }
-}
 
 export default class ToggleBar extends React.Component {
   constructor(props) {

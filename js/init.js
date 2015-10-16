@@ -8,7 +8,7 @@ import { Im, parseNumerics, connectMap }
 import colours from './econ_colours.js';
 
 import Header from './header.js';
-import ToggleBarRaw from './toggle-bar.js';
+import Stepper from './stepper.js';
 import ChartContainer from './chart-container.js';
 
 import chroma from 'chroma-js';
@@ -23,9 +23,12 @@ var store = createStore(updateState);
 
 class Chart extends ChartContainer {
   render() {
+    var stepperProps = {};
+
     return(
       <div className='chart-container'>
         <Header title="To come" subtitle="Also to come"/>
+        <Stepper {...stepperProps} />
       </div>
     );
   }
