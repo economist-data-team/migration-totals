@@ -17,6 +17,7 @@ var states = {
 
   VT : { col : 10, row : 1, abbr : 'VT', key : 'VT', name : 'Vermont'       , demonym : 'Vermonter' }       ,
   NH : { col : 11, row : 1, abbr : 'NH', key : 'NH', name : 'New Hampshire' , demonym : 'New Hampshirite' } ,
+  MA : { col : 12, row : 1, abbr : 'MA', key : 'MA', name : 'Massachusetts' , demonym : 'Massachusite' }    ,
 
   WA : { col : 2 , row : 2, abbr : 'WA', key : 'WA', name : 'Washington'    , demonym : 'Washingtonian' }   ,
   MT : { col : 3 , row : 2, abbr : 'MT', key : 'MT', name : 'Montana'       , demonym : 'Montanan' }        ,
@@ -25,7 +26,7 @@ var states = {
   WI : { col : 6 , row : 2, abbr : 'WI', key : 'WI', name : 'Wisconsin'     , demonym : 'Wisconsinite' }    ,
   MI : { col : 8 , row : 2, abbr : 'MI', key : 'MI', name : 'Michigan'      , demonym : 'Michigander' }     ,
   NY : { col : 10, row : 2, abbr : 'NY', key : 'NY', name : 'New York'      , demonym : 'New Yorker ' }     ,
-  MA : { col : 11, row : 2, abbr : 'MA', key : 'MA', name : 'Massachusetts' , demonym : 'Massachusite' }    ,
+  CT : { col : 11, row : 2, abbr : 'CT', key : 'CT', name : 'Connecticut'   , demonym : 'Connecticuter' }   ,
   RI : { col : 12, row : 2, abbr : 'RI', key : 'RI', name : 'Rhode Island'  , demonym : 'Rhode Islander' }  ,
 
   ID : { col : 2 , row : 3, abbr : 'ID', key : 'ID', name : 'Idaho'         , demonym : 'Idahoan' }         ,
@@ -36,8 +37,8 @@ var states = {
   IN : { col : 7 , row : 3, abbr : 'IN', key : 'IN', name : 'Indiana'       , demonym : 'Indianian' }       ,
   OH : { col : 8 , row : 3, abbr : 'OH', key : 'OH', name : 'Ohio'          , demonym : 'Ohioan' }          ,
   PA : { col : 9 , row : 3, abbr : 'PA', key : 'PA', name : 'Pennsylvania'  , demonym : 'Pennsylvanian' }   ,
-  NJ : { col : 10, row : 3, abbr : 'NJ', key : 'NJ', name : 'New Jersey'    , demonym : 'New Jerseyan' }    ,
-  CT : { col : 11, row : 3, abbr : 'CT', key : 'CT', name : 'Connecticut'   , demonym : 'Connecticuter' }   ,
+  DE : { col : 10, row : 3, abbr : 'DE', key : 'DE', name : 'Delaware'      , demonym : 'Delawarean' }      ,
+  NJ : { col : 11, row : 3, abbr : 'NJ', key : 'NJ', name : 'New Jersey'    , demonym : 'New Jerseyan' }    ,
 
   OR : { col : 2 , row : 4, abbr : 'OR', key : 'OR', name : 'Oregon'        , demonym : 'Oregonian' }       ,
   NV : { col : 3 , row : 4, abbr : 'NV', key : 'NV', name : 'Nevada'        , demonym : 'Nevadan' }         ,
@@ -47,8 +48,8 @@ var states = {
   KY : { col : 7 , row : 4, abbr : 'KY', key : 'KY', name : 'Kentucky'      , demonym : 'Kentuckian' }      ,
   WV : { col : 8 , row : 4, abbr : 'WV', key : 'WV', name : 'West Virginia' , demonym : 'West Virginian' }  ,
   VA : { col : 9 , row : 4, abbr : 'VA', key : 'VA', name : 'Virginia'      , demonym : 'Virginian' }       ,
-  MD : { col : 10, row : 4, abbr : 'MD', key : 'MD', name : 'Maryland'      , demonym : 'Marylander' }      ,
-  DE : { col : 11, row : 4, abbr : 'DE', key : 'DE', name : 'Delaware'      , demonym : 'Delawarean' }      ,
+  DC : { col : 10, row : 4, abbr : 'DC', key : 'DC', name : 'Washington, DC', demonym : 'Washingtonian' }   ,
+  MD : { col : 11, row : 4, abbr : 'MD', key : 'MD', name : 'Maryland'      , demonym : 'Marylander' }      ,
 
   CA : { col : 2 , row : 5, abbr : 'CA', key : 'CA', name : 'California'    , demonym : 'Californian' }     ,
   UT : { col : 3 , row : 5, abbr : 'UT', key : 'UT', name : 'Utah'          , demonym : 'Utahn' }           ,
@@ -58,7 +59,6 @@ var states = {
   TN : { col : 7 , row : 5, abbr : 'TN', key : 'TN', name : 'Tennessee'     , demonym : 'Tennessean' }      ,
   NC : { col : 8 , row : 5, abbr : 'NC', key : 'NC', name : 'North Carolina', demonym : 'North Carolinian' },
   SC : { col : 9 , row : 5, abbr : 'SC', key : 'SC', name : 'South Carolina', demonym : 'South Carolinian' },
-  DC : { col : 10, row : 5, abbr : 'DC', key : 'DC', name : 'Washington, DC', demonym : 'Washingtonian' }   ,
 
   AZ : { col : 4 , row : 6, abbr : 'AZ', key : 'AZ', name : 'Arizona'       , demonym : 'Arizonian' }       ,
   OK : { col : 5 , row : 6, abbr : 'OK', key : 'OK', name : 'Oklahoma'      , demonym : 'Oklahoman' }       ,
