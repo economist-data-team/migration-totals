@@ -29,17 +29,17 @@ var Stepper = connectMap({
 var steps = [
   new Step('apps', (<span>
     Applications to the EU are at their highest level since records began.
-    Nearing 100,000 per month. Almost 20% are headed to Germany.</span>)
+    Nearing 100,000 per month. Almost 20% are headed to Germany.</span>), '1'
   ),
   new Step('recog', (<span>
     But not all of these asylum seekers will make it in. Recognition rates vary from country
-    to country.</span>)
+    to country.</span>), '2'
   ),
   new Step('reloc', (<span>
-    Another way in is through relocation. [Explanation of relocation agreement.]</span>)
+    Another way in is through relocation. [Explanation of relocation agreement.]</span>), '3'
   ),
   new Step('resettle', (<span>
-    Another way in is through resettlement. [Explanation of resettlement agreement.]</span>)
+    Another way in is through resettlement. [Explanation of resettlement agreement.]</span>), '4'
   )
 ];
 
