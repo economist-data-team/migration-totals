@@ -4,12 +4,14 @@ import Option from './toggle-option.js';
 
 export default class Stepper extends React.Component {
   static get defaultProps() {
+    var items = [
+      { text : 'Lorem ipsum foo bar baz', key : 'foo', title : 'foo', value : 'foo' },
+      { text : 'Lorem ipsum bar baz biz', key : 'bar', title : 'bar', value : 'bar' }
+    ];
     return {
-      items : [
-        { text : 'Lorem ipsum foo bar baz', key : 'foo', title : 'foo', value : 'foo' },
-        { text : 'Lorem ipsum bar baz biz', key : 'bar', title : 'bar', value : 'bar' }
-      ],
-      action : (v) => { console.log(v); }
+      items : items,
+      action : (v) => { console.log(v); },
+      value : items[0].value
     }
   }
   get activeItem() {
@@ -29,7 +31,7 @@ export default class Stepper extends React.Component {
   render() {
     return(
       <div>
-        Things.
+        {this.activeItem.text}
         <ul className="tab-bar">{this.itemElements}</ul>
       </div>
     );

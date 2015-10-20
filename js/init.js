@@ -8,7 +8,7 @@ import { Im, parseNumerics, connectMap }
 import colours from './econ_colours.js';
 
 import Header from './header.js';
-import Stepper from './stepper.js';
+import StepperRaw from './stepper.js';
 import ChartContainer from './chart-container.js';
 
 import chroma from 'chroma-js';
@@ -16,14 +16,22 @@ import chroma from 'chroma-js';
 import { createStore } from 'redux';
 import { connect, Provider } from 'react-redux';
 
-import { updateData } from './actions.js';
+import {
+  updateData, updateStepperValue
+} from './actions.js';
 import updateState from './reducers.js'
 
 var store = createStore(updateState);
 
+var Stepper = connectMap({
+  value : 'stepperValue'
+})(StepperRaw);
+
 class Chart extends ChartContainer {
   render() {
-    var stepperProps = {};
+    var stepperProps = {
+      action : (v) => { store.dispatch(updateStepperValue(v)); }
+    };
 
     return(
       <div className='chart-container'>
