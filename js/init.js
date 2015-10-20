@@ -17,7 +17,8 @@ import { createStore } from 'redux';
 import { connect, Provider } from 'react-redux';
 
 import {
-  updateData, updateStepperValue
+  updateSourceData, updateCountryData,
+  updateAppsData, updateStepperValue
 } from './actions.js';
 import updateState from './reducers.js'
 
@@ -66,3 +67,13 @@ var chart = React.render(
   <Provider store={store}>
     {() => <Chart {...props} />}
   </Provider>, document.getElementById('interactive'));
+
+var dateFormatter = d3.time.format('%d/%m/%y');
+
+d3.csv('../data/applications.csv', function(error, data) {
+  data = data.map(parseNumerics).map((d) => {
+    d.month = dateFormatter.parse(d.month);
+    return d;
+  });
+  console.log(data);
+});

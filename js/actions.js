@@ -1,12 +1,27 @@
-export const UPDATE_DATA = 'UPDATE_DATA';
+export const UPDATE_SOURCE_DATA = 'UPDATE_SOURCE_DATA';
+export const UPDATE_COUNTRY_DATA = 'UPDATE_COUNTRY_DATA';
+export const UPDATE_APPS_DATA = 'UPDATE_APPS_DATA';
 export const UPDATE_STEPPER_VALUE = 'UPDATE_STEPPER_VALUE';
 
-export function updateData(data) {
+export function updateSourceData(data) {
   return {
-    type : UPDATE_DATA,
+    type : UPDATE_SOURCE_DATA,
     data
-  }
+  };
 }
+export function updateCountryData(data) {
+  return {
+    type : UPDATE_COUNTRY_DATA,
+    data
+  };
+}
+export function updateAppsData(data) {
+  return {
+    type : UPDATE_APPS_DATA,
+    data
+  };
+}
+
 
 export function updateStepperValue(value) {
   return {
