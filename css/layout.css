@@ -116,12 +116,14 @@
   .stepper-tabs {
     height: 30px;
     line-height: 20px;
+    margin-right: 5px;
 
     .tab {
       min-width: 25px;
 
       &.advancer {
         flex: 0;
+        padding: 5px 10px;
       }
     }
   }
