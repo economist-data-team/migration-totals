@@ -2,11 +2,20 @@ import React from 'react';
 import { Im } from './utilities.js';
 import Option from './toggle-option.js';
 
+export class Step {
+  constructor(key, text) {
+    this.key = key;
+    this.text = text;
+    this.title = key;
+    this.value = key;
+  }
+}
+
 export default class Stepper extends React.Component {
   static get defaultProps() {
     var items = [
-      { text : 'Lorem ipsum foo bar baz', key : 'foo', title : 'foo', value : 'foo' },
-      { text : 'Lorem ipsum bar baz biz', key : 'bar', title : 'bar', value : 'bar' }
+      new Step('foo', 'Lorem ipsum foo bar baz'),
+      new Step('bar', 'Lorem ipsum bar baz biz')
     ];
     return {
       items : items,

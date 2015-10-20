@@ -4,7 +4,7 @@ import {
 
 var initialState = {
   data : [],
-  stepperValue : 'bar'
+  stepperValue : 'apps'
 };
 
 function dataReducer(state = [], action) {
