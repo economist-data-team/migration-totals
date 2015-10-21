@@ -104,10 +104,9 @@ export function generateTranslateString(x, y, css) {
  * @return {Object} margin values as an object
  */
 export function parseMarginArray(marginArray) {
-  if(marginArray instanceof Number) {
-    marginArray = [marginArray];
+  if(isNumeric(marginArray)) {
+    marginArray = [+marginArray];
   }
-
   if(!(marginArray instanceof Array)) {
     return marginArray;
   }
