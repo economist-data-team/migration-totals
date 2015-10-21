@@ -1,3 +1,15 @@
 /* project-specific CSS belongs here */
 
-/* intentionally empty */
+.chart-column {
+  opacity : 0.8;
+}
+
+.column-0 {
+  fill: var(--red-1);
+}
+.column-1 {
+  fill: var(--blue-2);
+}
+.column-2 {
+  fill : var(--green-1);
+}
