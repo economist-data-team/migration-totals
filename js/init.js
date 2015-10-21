@@ -10,6 +10,7 @@ import colours from './econ_colours.js';
 import Header from './header.js';
 import StepperRaw, { Step } from './stepper.js';
 import ChartContainer from './chart-container.js';
+import ColumnChartRaw from './column-chart.js';
 
 import chroma from 'chroma-js';
 
@@ -27,6 +28,10 @@ var store = createStore(updateState);
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
+var ColumnChart = connectMap({
+
+})(ColumnChartRaw);
+
 var steps = [
   new Step('apps', (<span>
     Applications to the EU are at their highest level since records began.
@@ -51,10 +56,14 @@ class Chart extends ChartContainer {
       action : (v) => { store.dispatch(updateStepperValue(v)); }
     };
 
+    var columnChartProps = {
+    };
+
     return(
       <div className='chart-container'>
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
+        <ColumnChart {...columnChartProps} />
       </div>
     );
   }
@@ -75,5 +84,7 @@ d3.csv('../data/applications.csv', function(error, data) {
     d.month = dateFormatter.parse(d.month);
     return d;
   });
-  console.log(data);
+  // console.log(data);
+
+  store.dispatch(updateAppsData(data));
 });

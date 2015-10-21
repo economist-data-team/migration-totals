@@ -98,11 +98,16 @@ export function generateTranslateString(x, y, css) {
  *   be given in [top right bottom left] order, but will handle
  *   omitted values as CSS does
  *
- * @param  {Array}  marginArray - margin values as array
+ * @param  {Array|Number}  marginArray - margin values as array, or
+ *                                     simply as a single number
  *
  * @return {Object} margin values as an object
  */
 export function parseMarginArray(marginArray) {
+  if(marginArray instanceof Number) {
+    marginArray = [marginArray];
+  }
+
   if(!(marginArray instanceof Array)) {
     return marginArray;
   }
