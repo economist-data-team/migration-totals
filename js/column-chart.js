@@ -29,12 +29,10 @@ class ColumnSeries extends BoundedSVG {
       .attr({
         height : d => yScale(this.props.yAccessor(d)) - yScale(0),
         y : d => {
-          console.log(this.props.index, this.props.yAccessor(d), this.props.priorAccessor(d),
-            yScale(this.props.yAccessor(d) + this.props.priorAccessor(d)));
           return this.heightSpan - yScale(this.props.yAccessor(d) + this.props.priorAccessor(d));
         },
         width: colWidth,
-        x : d => xScale(this.props.xAccessor(d)) + this.props.offset
+        x : (d, idx) => xScale(this.props.xAccessor(d, idx)) + this.props.offset
       });
 
     return el.toReact();
@@ -46,7 +44,7 @@ export default class ColumnChart extends BoundedSVG {
     return {
       height: 300,
       width: 595,
-      xAccessor : d => d.x,
+      xAccessor : (d,i) => i,
       arrangement: 'stacked',
       series : [
         { name : 'first', accessor : d => d.y },
