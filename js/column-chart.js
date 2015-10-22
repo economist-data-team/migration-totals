@@ -14,7 +14,6 @@ class ColumnSeries extends BoundedSVG {
 
     var xScale = this.props.xScale, yScale = this.props.yScale;
     var xWidth = Math.abs(xScale.range()[1] - xScale.range()[0]);
-    console.log(xWidth);
 
     // spacing dropped here for the last column, which should flush to
     // the end

@@ -37,7 +37,7 @@ var ColumnChart = connect((state) => {
   if(end) { end.setMonth(end.getMonth() + 1); }
   return {
     data,
-    xScale : d3.time.scale().domain([d3.min(months), end])
+    xScale : d3.scale.linear().domain([0, data.length])
   };
 })(ColumnChartRaw);
 
@@ -72,7 +72,6 @@ class Chart extends ChartContainer {
         { name : 'germany', accessor : d => d.Germany },
         { name : 'europe', accessor : d => d.otherEurope }
       ],
-      xAccessor : d => d.month,
       yScale : d3.scale.linear().domain([0, 150000]),
       spacing : 1
     };
