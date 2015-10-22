@@ -4,12 +4,12 @@
   opacity : 0.8;
 }
 
-.column-0 {
+.column-first {
   fill: var(--red-1);
 }
-.column-1 {
+.column-second {
   fill: var(--blue-2);
 }
-.column-2 {
+.column-third {
   fill : var(--green-1);
 }

@@ -25,7 +25,7 @@ class ColumnSeries extends BoundedSVG {
       .classed('chart-column', true);
     columnJoin.exit().remove();
     columnJoin
-      .classed(`column-${this.props.index}`, true)
+      .classed(`column-${this.props.name}`, true)
       .attr({
         height : d => yScale(this.props.yAccessor(d)) - yScale(0),
         y : d => {
@@ -47,7 +47,12 @@ export default class ColumnChart extends BoundedSVG {
       height: 300,
       width: 595,
       xAccessor : d => d.x,
-      yAccessor : [d => d.y, d => d.y2, d => d.y3],
+      arrangement: 'stacked',
+      series : [
+        { name : 'first', accessor : d => d.y },
+        { name : 'second', accessor : d => d.y2 },
+        { name : 'third', accessor : d => d.y3 },
+      ],
       data : [
         {x:0, y:10, y2:80, y3:50},
         {x:1, y:30, y2:50, y3:50},
@@ -64,19 +69,18 @@ export default class ColumnChart extends BoundedSVG {
     var el = RFD.createElement('g');
     var sel = d3.select(el);
 
-    var yAccessor = this.props.yAccessor instanceof Array ? this.props.yAccessor : [this.props.yAccessor];
-
     var xScale = this.props.xScale.copy().range([this.leftBound, this.rightBound + this.props.spacing]);
     var yScale = this.props.yScale.copy().range([this.topBound, this.bottomBound]);
 
-    var columns = yAccessor.map((accessor, idx) => {
+    var columns = this.props.series.map((series, idx) => {
       var props = {
-        key : accessor,
+        key : series.name,
+        name : series.name,
         xScale : xScale, yScale : yScale,
         data : this.props.data,
         xAccessor : this.props.xAccessor,
-        yAccessor : accessor,
-        priorAccessor : d => yAccessor.slice(0,idx).reduce((memo, fn) => { return memo + fn(d); }, 0),
+        yAccessor : series.accessor,
+        priorAccessor : d => this.props.series.slice(0,idx).reduce((memo, s) => { return memo + s.accessor(d); }, 0),
         spacing : this.props.spacing,
         margin : this.props.margin,
         index : idx,
