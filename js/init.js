@@ -24,12 +24,21 @@ import {
 import updateState from './reducers.js'
 
 var store = createStore(updateState);
+window.store = store;
 
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
-var ColumnChart = connectMap({
-
+var ColumnChart = connect((state) => {
+  var data = state.appsData;
+  var months = data.map(d => d.month);
+  // need new Date to avoid modifying the actual data point
+  var end = new Date(d3.max(months));
+  if(end) { end.setMonth(end.getMonth() + 1); }
+  return {
+    data,
+    xScale : d3.time.scale().domain([d3.min(months), end])
+  };
 })(ColumnChartRaw);
 
 var steps = [
@@ -49,6 +58,8 @@ var steps = [
   )
 ];
 
+var dateFormatter = d3.time.format('%d/%m/%y');
+
 class Chart extends ChartContainer {
   render() {
     var stepperProps = {
@@ -57,6 +68,13 @@ class Chart extends ChartContainer {
     };
 
     var columnChartProps = {
+      series : [
+        { name : 'germany', accessor : d => d.Germany },
+        { name : 'europe', accessor : d => d.otherEurope }
+      ],
+      xAccessor : d => d.month,
+      yScale : d3.scale.linear().domain([0, 150000]),
+      spacing : 1
     };
 
     return(
@@ -77,14 +95,11 @@ var chart = React.render(
     {() => <Chart {...props} />}
   </Provider>, document.getElementById('interactive'));
 
-var dateFormatter = d3.time.format('%d/%m/%y');
-
 d3.csv('../data/applications.csv', function(error, data) {
   data = data.map(parseNumerics).map((d) => {
     d.month = dateFormatter.parse(d.month);
     return d;
   });
-  // console.log(data);
 
   store.dispatch(updateAppsData(data));
 });

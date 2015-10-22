@@ -13,10 +13,13 @@ class ColumnSeries extends BoundedSVG {
     var sel = d3.select(el);
 
     var xScale = this.props.xScale, yScale = this.props.yScale;
+    var xWidth = Math.abs(xScale.range()[1] - xScale.range()[0]);
+    console.log(xWidth);
 
     // spacing dropped here for the last column, which should flush to
     // the end
-    var colWidth = xScale(1) - xScale(0) - this.props.spacing - this.props.offset;
+    // var colWidth = xScale(this.props.unitPair[1]) - xScale(this.props.unitPair[0]) - this.props.spacing - this.props.offset;
+    var colWidth = xWidth/this.props.data.length - this.props.spacing - this.props.offset;
 
     var columnJoin = sel.selectAll('.chart-column')
       .data(this.props.data);

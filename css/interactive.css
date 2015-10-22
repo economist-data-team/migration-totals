@@ -4,12 +4,9 @@
   opacity : 0.8;
 }
 
-.column-first {
+.column-germany {
   fill: var(--red-1);
 }
-.column-second {
+.column-europe {
   fill: var(--blue-2);
-}
-.column-third {
-  fill : var(--green-1);
 }
