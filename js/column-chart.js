@@ -41,6 +41,31 @@ class ColumnSeries extends BoundedSVG {
   }
 }
 
+class BarAxis extends BoundedSVG {
+  static get defaultProps() {
+    return {
+      scale : d3.scale.linear(),
+      tickFormat : v => v
+    };
+  }
+  render() {
+    var el = RFD.createElement('g');
+    var sel = d3.select(el);
+
+    var scale = this.props.scale.copy();
+
+    var axis = d3.svg.axis()
+      .scale(scale)
+      .orient('bottom')
+      .innerTickSize(6)
+      .outerTickSize(1);
+
+    sel.call(axis)
+
+    return el.toReact();
+  }
+}
+
 export default class ColumnChart extends BoundedSVG {
   static get defaultProps() {
     return {
@@ -89,9 +114,14 @@ export default class ColumnChart extends BoundedSVG {
       return (<ColumnSeries {...props} />);
     });
 
+    var axisProps = {
+      scale : xScale
+    };
+
     return(
       <svg height={this.props.height} width={this.props.width}>
         {columns}
+        <BarAxis {...axisProps} />
       </svg>
     );
   }
