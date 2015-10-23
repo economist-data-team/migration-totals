@@ -2,7 +2,7 @@
 
 import d3 from 'd3';
 import React from 'react';
-import { Im, parseNumerics, connectMap }
+import { Im, parseNumerics, connectMap, generateTranslateString }
   from './utilities.js';
 
 import colours from './econ_colours.js';
@@ -62,8 +62,43 @@ var steps = [
 var dateFormatter = d3.time.format('%d/%m/%y');
 
 class ChartLabel extends BoundedSVG {
+  static get defaultProps() {
+    return Im.extend(super.defaultProps, {
+      fontSize : 14,
+      width : 110,
+      text : 'Monthly asylum applications to Europe'
+    });
+  }
+  get textElements() {
+    // we're just going to make a guess here:
+    var characters = this.props.width * 2 / this.props.fontSize;
+    var words = this.props.text.split(' ');
+    var texts = [];
+
+    while(words.join(' ').length > characters) {
+      let nextLine = [];
+      while(nextLine.join(' ').length < characters) {
+        nextLine.push(words.shift());
+      }
+      if(nextLine.join(' ').length > characters) {
+        words.unshift(nextLine.pop());
+      }
+      texts.push(nextLine);
+    }
+    texts.push(words);
+
+    return texts.map((line, idx) => {
+      return (<text x="5" y={(idx + 1) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
+    });
+  }
   render() {
-    return(<g><text>Hi</text></g>)
+    // <text x={this.leftBound} y={this.topBound + 18}>{this.textElements}</text>
+    var textTransform = generateTranslateString(this.leftBound, this.topBound);
+    //
+    return(<g transform={textTransform} className="label-group">
+      <rect width={this.props.width} height="3" fill="red" ></rect>
+      {this.textElements}
+    </g>)
   }
 }
 
@@ -89,8 +124,8 @@ class Chart extends ChartContainer {
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
         <svg width="595" height="300">
-          <ChartLabel />
           <ColumnChart {...columnChartProps} />
+          <ChartLabel />
         </svg>
       </div>
     );

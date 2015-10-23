@@ -1,5 +1,9 @@
 /* project-specific CSS belongs here */
 
+.label-group {
+  font-weight: bold;
+}
+
 .chart-column {
   /*opacity : 0.8;*/
 }
