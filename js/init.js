@@ -61,6 +61,12 @@ var steps = [
 
 var dateFormatter = d3.time.format('%d/%m/%y');
 
+class ChartLabel extends BoundedSVG {
+  render() {
+    return(<g><text>Hi</text></g>)
+  }
+}
+
 class Chart extends ChartContainer {
   render() {
     var stepperProps = {
@@ -83,6 +89,7 @@ class Chart extends ChartContainer {
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
         <svg width="595" height="300">
+          <ChartLabel />
           <ColumnChart {...columnChartProps} />
         </svg>
       </div>
