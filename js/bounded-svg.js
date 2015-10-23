@@ -22,4 +22,14 @@ export default class BoundedSVG extends SVGComponent {
   get bottomBound() { return this.props.height - this.margin.bottom; }
   get widthSpan() { return this.props.width - this.margin.left - this.margin.right; }
   get heightSpan() { return this.props.height - this.margin.top - this.margin.bottom; }
+
+  // mostly for debugging
+  get boundingPolygonPoints() {
+    return [
+      [this.leftBound, this.topBound],
+      [this.leftBound, this.bottomBound],
+      [this.rightBound, this.bottomBound],
+      [this.rightBound, this.topBound]
+    ].map(point => point.join(',')).join(' ')
+  }
 }

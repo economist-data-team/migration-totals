@@ -2,7 +2,7 @@ import d3 from 'd3';
 import React from 'react';
 import RFD from 'react-faux-dom';
 import BoundedSVG from './bounded-svg.js';
-import { Im } from './utilities.js';
+import { Im, generateTranslateString } from './utilities.js';
 
 class ColumnSeries extends BoundedSVG {
   static get defaultProps() {
@@ -31,7 +31,7 @@ class ColumnSeries extends BoundedSVG {
       .attr({
         height : d => yScale(this.props.yAccessor(d)) - yScale(0),
         y : d => {
-          return this.heightSpan - yScale(this.props.yAccessor(d) + this.props.priorAccessor(d));
+          return this.bottomBound - yScale(this.props.yAccessor(d) + this.props.priorAccessor(d)) + yScale(0);
         },
         width: colWidth,
         x : (d, idx) => xScale(this.props.xAccessor(d, idx)) + this.props.offset
@@ -60,7 +60,11 @@ class BarAxis extends BoundedSVG {
       .innerTickSize(6)
       .outerTickSize(1);
 
-    sel.call(axis)
+    sel
+      .attr({
+        transform : generateTranslateString(0, this.props.offset)
+      })
+      .call(axis)
 
     return el.toReact();
   }
@@ -115,14 +119,16 @@ export default class ColumnChart extends BoundedSVG {
     });
 
     var axisProps = {
-      scale : xScale
+      scale : xScale,
+      offset : this.bottomBound
     };
 
     return(
-      <svg height={this.props.height} width={this.props.width}>
+      <g height={this.props.height} width={this.props.width}>
+        <polygon fill="#e6e6e6" points={this.boundingPolygonPoints}></polygon>
         {columns}
         <BarAxis {...axisProps} />
-      </svg>
+      </g>
     );
   }
 }

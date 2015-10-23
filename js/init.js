@@ -11,6 +11,7 @@ import Header from './header.js';
 import StepperRaw, { Step } from './stepper.js';
 import ChartContainer from './chart-container.js';
 import ColumnChartRaw from './column-chart.js';
+import BoundedSVG from './bounded-svg.js';
 
 import chroma from 'chroma-js';
 
@@ -68,11 +69,12 @@ class Chart extends ChartContainer {
     };
 
     var columnChartProps = {
+      margin : [10, 10, 40],
       series : [
         { name : 'germany', accessor : d => d.Germany },
         { name : 'europe', accessor : d => d.otherEurope }
       ],
-      yScale : d3.scale.linear().domain([0, 150000]),
+      yScale : d3.scale.linear().domain([0, 130000]),
       spacing : 1
     };
 
@@ -80,7 +82,9 @@ class Chart extends ChartContainer {
       <div className='chart-container'>
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
-        <ColumnChart {...columnChartProps} />
+        <svg width="595" height="300">
+          <ColumnChart {...columnChartProps} />
+        </svg>
       </div>
     );
   }
