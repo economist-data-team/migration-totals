@@ -12,6 +12,7 @@ import StepperRaw, { Step } from './stepper.js';
 import ChartContainer from './chart-container.js';
 import ColumnChartRaw from './column-chart.js';
 import BoundedSVG from './bounded-svg.js';
+import AxisRaw from './axis.js';
 
 import chroma from 'chroma-js';
 
@@ -30,17 +31,13 @@ window.store = store;
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
-var ColumnChart = connect((state) => {
-  var data = state.appsData;
-  var months = data.map(d => d.month);
-  // need new Date to avoid modifying the actual data point
-  var end = new Date(d3.max(months));
-  if(end) { end.setMonth(end.getMonth() + 1); }
-  return {
-    data,
-    xScale : d3.scale.linear().domain([0, data.length])
-  };
+var ColumnChart = connectMap({
+  data : 'appsData',
+  xScale : 'appsScale'
 })(ColumnChartRaw);
+var ColumnChartAxis = connectMap({
+
+})(AxisRaw);
 
 var steps = [
   new Step('apps', (<span>
@@ -66,7 +63,7 @@ class ChartLabel extends BoundedSVG {
     return Im.extend(super.defaultProps, {
       fontSize : 14,
       width : 110,
-      text : 'Monthly asylum applications to Europe'
+      text : 'Chart label'
     });
   }
   get textElements() {
@@ -118,6 +115,12 @@ class Chart extends ChartContainer {
       yScale : d3.scale.linear().domain([0, 130000]),
       spacing : 1
     };
+    var columnAxisProps = {
+      height : 300,
+      margin : [260, 10, 10]
+    };
+
+    var text = 'Monthly asylum applications to Europe';
 
     return(
       <div className='chart-container'>
@@ -125,7 +128,8 @@ class Chart extends ChartContainer {
         <Stepper {...stepperProps} />
         <svg width="595" height="300">
           <ColumnChart {...columnChartProps} />
-          <ChartLabel />
+          <ColumnChartAxis {...columnAxisProps} />
+          <ChartLabel text="Monthly asylum applications to Europe"/>
         </svg>
       </div>
     );

@@ -127,7 +127,6 @@ export default class ColumnChart extends BoundedSVG {
       <g height={this.props.height} width={this.props.width}>
         <polygon fill="#e6e6e6" points={this.boundingPolygonPoints}></polygon>
         {columns}
-        <BarAxis {...axisProps} />
       </g>
     );
   }
