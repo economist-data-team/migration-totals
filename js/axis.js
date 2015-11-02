@@ -8,12 +8,20 @@ import { Im, generateTranslateString } from './utilities.js';
 class Tick extends React.Component {
   static get defaultProps() {
     return {
-      tickLength : 5
+      tickLength : 5,
+      position : 0,
+      label : 'none',
+      textOffset : 0
     }
   }
   render() {
-    return (<g className='tick'>
-      <line x1="0" y1="0" x2="0" y2={this.props.tickLength}></line>
+    var transform = generateTranslateString(this.props.position, 0);
+
+    var line = this.props.hideTick ? null : (<line x1="0" y1="0" x2="0" y2={this.props.tickLength}></line>);
+
+    return (<g className='tick' transform={transform}>
+      {line}
+      <text x={this.props.textOffset} y={this.props.tickLength + 18} textAnchor="middle">{this.props.label}</text>
     </g>);
   }
 }
@@ -24,16 +32,11 @@ export default class Axis extends BoundedSVG {
       scale : d3.scale.linear().domain([0,100]),
       type : 'year',
       orient : 'bottom',
-      ticks : 10,
+      tickValues : d3.range(0,100,10),
       tickPosition : 'interval', // or tick
       tickFormat : v => v,
       offset : [0, 0]
     });
-  }
-  get ticks() {
-    if(this.props.ticks instanceof Number) {
-
-    }
   }
   render() {
     var el = RFD.createElement('g');
@@ -44,22 +47,23 @@ export default class Axis extends BoundedSVG {
 
     var scale = this.props.scale.copy().range([this.leftBound, this.rightBound]);
 
-    // var axis = d3.svg.axis()
-    //   .scale(scale)
-    //   .orient(this.props.orient)
-    //   .innerTickSize(6)
-    //   .outerTickSize(1);
-    //
-    // sel
-    //   .classed(classes, true)
-    //   .attr('transform', transform)
-    //   .call(axis);
+    var interval = this.props.tickPosition === 'interval'
 
-    // return el.toReact();
+    var ticks = this.props.tickValues.map((t,i) => {
+      var nextValue = this.props.tickValues[i + 1] || scale.domain()[1];
+      var props = {
+        value : t,
+        label : this.props.tickFormat(t),
+        position : scale(t),
+        hideTick : interval && i === 0,
+        textOffset : interval ? (scale(nextValue) - scale(t)) / 2 : 0
+      };
 
+      return (<Tick {...props} />);
+    });
 
     return (<g className={classes.join(' ')} transform={transform}>
-
-    </g>)
+      {ticks}
+    </g>);
   }
 }

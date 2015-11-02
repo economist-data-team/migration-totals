@@ -36,7 +36,7 @@ var ColumnChart = connectMap({
   xScale : 'appsScale'
 })(ColumnChartRaw);
 var ColumnChartAxis = connectMap({
-
+  scale : 'appsScale'
 })(AxisRaw);
 
 var steps = [
@@ -117,7 +117,9 @@ class Chart extends ChartContainer {
     };
     var columnAxisProps = {
       height : 300,
-      margin : [260, 10, 10]
+      margin : [260, 10, 10],
+      tickValues : d3.range(0, 90, 12),
+      tickFormat : v => Math.floor(v/12) + 2008
     };
 
     var text = 'Monthly asylum applications to Europe';
