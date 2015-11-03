@@ -11,6 +11,7 @@ import Header from './header.js';
 import StepperRaw, { Step } from './stepper.js';
 import ChartContainer from './chart-container.js';
 import ColumnChartRaw from './column-chart.js';
+import ColumnChartLabelRaw from './column-chart-label.js';
 import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 
@@ -38,6 +39,9 @@ var ColumnChart = connectMap({
 var ColumnChartAxis = connectMap({
   scale : 'appsScale'
 })(AxisRaw);
+var ColumnChartLabel = connectMap({
+
+})(ColumnChartLabelRaw);
 
 var steps = [
   new Step('apps', (<span>
@@ -113,7 +117,8 @@ class Chart extends ChartContainer {
         { name : 'europe', accessor : d => d.otherEurope }
       ],
       yScale : d3.scale.linear().domain([0, 130000]),
-      spacing : 1
+      spacing : 1,
+      enterHandler : function(d) { console.log(d); }
     };
     var columnAxisProps = {
       height : 300,
@@ -130,6 +135,7 @@ class Chart extends ChartContainer {
         <Stepper {...stepperProps} />
         <svg width="595" height="300">
           <ColumnChart {...columnChartProps} />
+          <ColumnChartLabel />
           <ColumnChartAxis {...columnAxisProps} />
           <ChartLabel text="Monthly asylum applications to Europe"/>
         </svg>

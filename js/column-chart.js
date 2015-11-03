@@ -28,6 +28,8 @@ class ColumnSeries extends BoundedSVG {
     columnJoin.exit().remove();
     columnJoin
       .classed(`column-${this.props.name}`, true)
+      .on('mouseenter', (d) => { console.log('hi', d); } )
+      .on('mouseleave', this.props.leaveHandler)
       .attr({
         height : d => yScale(this.props.yAccessor(d)) - yScale(0),
         y : d => {
@@ -91,7 +93,9 @@ export default class ColumnChart extends BoundedSVG {
       margin : 10,
       spacing : 10,
       xScale : d3.scale.linear().domain([0,4]),
-      yScale : d3.scale.linear().domain([0,300])
+      yScale : d3.scale.linear().domain([0,300]),
+      enterHandler : d => null,
+      leaveHandler : d => null
     };
   }
   render() {
@@ -112,6 +116,8 @@ export default class ColumnChart extends BoundedSVG {
         priorAccessor : d => this.props.series.slice(0,idx).reduce((memo, s) => { return memo + s.accessor(d); }, 0),
         spacing : this.props.spacing,
         margin : this.props.margin,
+        enterHandler : this.props.enterHandler,
+        leaveHandler : this.props.leaveHandler,
         index : idx,
         offset : 0 // placeholder: to handle adjacent series
       };
