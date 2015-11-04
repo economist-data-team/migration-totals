@@ -7,7 +7,8 @@ export default class ColumnChartLabel extends BoundedSVG {
     return Im.extend(super.defaultProps, {
       text : 'Hello',
       position : [300, 50],
-      lineLength : -50
+      lineLength : -50,
+      verticalOffset : 0
     });
   }
   render() {
@@ -31,8 +32,8 @@ export default class ColumnChartLabel extends BoundedSVG {
     var textAnchor = textRight ? 'start' : 'end';
 
     return (<g transform={transform}>
-      <line x1="0" x2={lineLength} y1="0" y2="0" stroke="black"></line>
-      <text x={textOffset} y="5" fontSize={fontSize} textAnchor={textAnchor} className="column-chart-label">
+      <line x1="0" x2={lineLength} y1="0" y2={this.props.verticalOffset} stroke="black"></line>
+      <text x={textOffset} y={this.props.verticalOffset + 5} fontSize={fontSize} textAnchor={textAnchor} className="column-chart-label">
       {this.props.text}
       </text>
     </g>);

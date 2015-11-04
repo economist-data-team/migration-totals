@@ -45,9 +45,11 @@ var ColumnChartAxis = connectMap({
 })(AxisRaw);
 var ColumnChartLabel = connect(state => {
   var d = state.columnChartHighlight || (state.appsData ? state.appsData[state.appsData.length - 1] : null);
+  var total = d ? d.Germany + d.otherEurope : 0;
   return {
-    position : d ? [d.x, d['y-europe']] : [null, null],
-    text : d ? `${columnChartMonthFormatter(d.month)}: ${commaNumber(d.Germany + d.otherEurope)}` : ''
+    position : d ? [d.x + 2, d['y-europe']] : [null, null],
+    text : d ? `${columnChartMonthFormatter(d.month)}: ${commaNumber(d.Germany + d.otherEurope)}` : '',
+    verticalOffset : total < 50000 ? -30 : 0
   };
 })(ColumnChartLabelRaw);
 
@@ -101,9 +103,8 @@ class ChartLabel extends BoundedSVG {
     });
   }
   render() {
-    // <text x={this.leftBound} y={this.topBound + 18}>{this.textElements}</text>
     var textTransform = generateTranslateString(this.leftBound, this.topBound);
-    //
+
     return(<g transform={textTransform} className="label-group">
       <rect width={this.props.width} height="3" fill="red" ></rect>
       {this.textElements}
