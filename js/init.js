@@ -36,22 +36,6 @@ var columnChartMonthFormatter = d3.time.format('%B %Y');
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
-var ColumnChart = connectMap({
-  data : 'appsData',
-  xScale : 'appsScale'
-})(ColumnChartRaw);
-var ColumnChartAxis = connectMap({
-  scale : 'appsScale'
-})(AxisRaw);
-var ColumnChartLabel = connect(state => {
-  var d = state.columnChartHighlight || (state.appsData ? state.appsData[state.appsData.length - 1] : null);
-  var total = d ? d.Germany + d.otherEurope : 0;
-  return {
-    position : d ? [d.x + 2, d['y-europe']] : [null, null],
-    text : d ? `${columnChartMonthFormatter(d.month)}: ${commaNumber(d.Germany + d.otherEurope)}` : '',
-    verticalOffset : total < 50000 ? -30 : 0
-  };
-})(ColumnChartLabelRaw);
 
 var steps = [
   new Step('apps', (<span>
@@ -112,13 +96,15 @@ class ChartLabel extends BoundedSVG {
   }
 }
 
-class Chart extends ChartContainer {
-  render() {
-    var stepperProps = {
-      items : steps,
-      action : (v) => { store.dispatch(updateStepperValue(v)); }
+class ColumnFrame extends React.Component {
+  static get defaultProps() {
+    return {
+      columnData : [],
+      columnScale : d3.scale.linear(),
+      columnChartHighlight : null
     };
-
+  }
+  render() {
     var columnChartProps = {
       margin : [10, 10, 40],
       series : [
@@ -128,27 +114,98 @@ class Chart extends ChartContainer {
       yScale : d3.scale.linear().domain([0, 130000]),
       spacing : 1,
       enterHandler : d => store.dispatch(updateColumnChartHighlight(d)),
-      leaveHandler : d => store.dispatch(clearColumnChartHighlight())
+      leaveHandler : d => store.dispatch(clearColumnChartHighlight()),
+      data : this.props.columnData,
+      xScale : this.props.columnScale
     };
     var columnAxisProps = {
       height : 300,
       margin : [260, 10, 10],
       tickValues : d3.range(0, 90, 12),
-      tickFormat : v => Math.floor(v/12) + 2008
+      tickFormat : v => Math.floor(v/12) + 2008,
+      scale : this.props.columnAxis
     };
 
-    var text = 'Monthly asylum applications to Europe';
+    // we're rendering this here because it generates the x/y coordinate
+    // values that the label will need to render correctly. This is a
+    // stupid hack but so it goes
+    var chartRendered = (<ColumnChartRaw {...columnChartProps} />);
+    React.render(chartRendered, document.createElement('div'));
+
+    var highlight = this.props.columnChartHighlight ||
+      (this.props.columnData ? this.props.columnData[this.props.columnData.length - 1] : null);
+    var total = highlight ? highlight.Germany + highlight.otherEurope : 0;
+    var columnChartLabelProps = {
+      position : highlight ? [highlight.x + 2, highlight['y-europe']] : [null, null],
+      text : highlight ? `${columnChartMonthFormatter(highlight.month)}: ${commaNumber(highlight.Germany + highlight.otherEurope)}` : '',
+      verticalOffset : total < 50000 ? -30 : 0
+    };
+
+    return(<div>
+      <svg width="595" height="300">
+        {chartRendered}
+        <ColumnChartLabelRaw {...columnChartLabelProps} />
+        <AxisRaw {...columnAxisProps} />
+        <ChartLabel text="Monthly asylum applications to Europe"/>
+      </svg>
+      <svg>{/* for the treemap */}</svg>
+    </div>)
+  }
+}
+class BarFrame extends React.Component {
+  render() {
+    return(<div>Bars!</div>);
+  }
+}
+
+class MigrationFSMRaw extends React.Component {
+  static get defaultProps() {
+    return {
+      step : 'apps'
+    };
+  }
+  get columnStep() {
+    var columnProps = {
+      columnData : this.props.columnData,
+      columnScale : this.props.columnScale,
+      columnChartHighlight : this.props.columnChartHighlight
+    };
+    return (<ColumnFrame {...columnProps} />);
+  }
+  get barStep() {
+    return (<BarFrame />);
+  }
+  render() {
+    switch(this.props.step) {
+      case 'apps':
+        return this.columnStep;
+      case 'recog':
+      case 'reloc':
+      case 'resettle':
+        return this.barStep;
+    }
+  }
+}
+
+var MigrationFSM = connectMap({
+  step : 'stepperValue',
+  columnData : 'appsData',
+  columnScale : 'appsScale',
+  columnChartHighlight : 'columnChartHighlight'
+})(MigrationFSMRaw);
+
+class Chart extends ChartContainer {
+  render() {
+    var stepperProps = {
+      items : steps,
+      action : (v) => { store.dispatch(updateStepperValue(v)); }
+    };
 
     return(
       <div className='chart-container'>
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
-        <svg width="595" height="300">
-          <ColumnChart {...columnChartProps} />
-          <ColumnChartLabel />
-          <ColumnChartAxis {...columnAxisProps} />
-          <ChartLabel text="Monthly asylum applications to Europe"/>
-        </svg>
+        <MigrationFSM />
       </div>
     );
   }
