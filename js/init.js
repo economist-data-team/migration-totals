@@ -17,7 +17,7 @@ import AxisRaw from './axis.js';
 
 import chroma from 'chroma-js';
 
-import { createStore } from 'redux';
+import { createStore, compose } from 'redux';
 import { connect, Provider } from 'react-redux';
 
 import {
@@ -28,7 +28,16 @@ import {
 } from './actions.js';
 import updateState from './reducers.js'
 
-var store = createStore(updateState);
+// DEVTOOLS
+import { devTools, persistState } from 'redux-devtools';
+import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
+
+// var store = createStore(updateState);
+const CREATESTOREDEBUG = compose(
+  devTools(),
+  persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
+)(createStore);
+var store = CREATESTOREDEBUG(updateState);
 window.store = store;
 
 var columnChartMonthFormatter = d3.time.format('%B %Y');
@@ -155,6 +164,9 @@ class ColumnFrame extends React.Component {
   }
 }
 class BarFrame extends React.Component {
+  static get defaultProps() {
+    return {};
+  }
   render() {
     return(<div>Bars!</div>);
   }
@@ -217,9 +229,14 @@ var props = {
 };
 
 var chart = React.render(
+<div>
   <Provider store={store}>
     {() => <Chart {...props} />}
-  </Provider>, document.getElementById('interactive'));
+  </Provider>
+  <DebugPanel top right bottom>
+    <DevTools store={store} monitor={LogMonitor} />
+  </DebugPanel>
+</div>, document.getElementById('interactive'));
 
 d3.csv('../data/applications.csv', function(error, data) {
   data = data.map(parseNumerics).map((d) => {
