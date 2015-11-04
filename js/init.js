@@ -2,7 +2,7 @@
 
 import d3 from 'd3';
 import React from 'react';
-import { Im, parseNumerics, connectMap, generateTranslateString }
+import { Im, parseNumerics, connectMap, generateTranslateString,  commaNumber }
   from './utilities.js';
 
 import colours from './econ_colours.js';
@@ -22,12 +22,16 @@ import { connect, Provider } from 'react-redux';
 
 import {
   updateSourceData, updateCountryData,
-  updateAppsData, updateStepperValue
+  updateAppsData, updateStepperValue,
+  updateColumnChartHighlight,
+  clearColumnChartHighlight
 } from './actions.js';
 import updateState from './reducers.js'
 
 var store = createStore(updateState);
 window.store = store;
+
+var columnChartMonthFormatter = d3.time.format('%B %Y');
 
 var Stepper = connectMap({
   value : 'stepperValue'
@@ -39,8 +43,12 @@ var ColumnChart = connectMap({
 var ColumnChartAxis = connectMap({
   scale : 'appsScale'
 })(AxisRaw);
-var ColumnChartLabel = connectMap({
-
+var ColumnChartLabel = connect(state => {
+  var d = state.columnChartHighlight || (state.appsData ? state.appsData[state.appsData.length - 1] : null);
+  return {
+    position : d ? [d.x, d['y-europe']] : [null, null],
+    text : d ? `${columnChartMonthFormatter(d.month)}: ${commaNumber(d.Germany + d.otherEurope)}` : ''
+  };
 })(ColumnChartLabelRaw);
 
 var steps = [
@@ -118,7 +126,8 @@ class Chart extends ChartContainer {
       ],
       yScale : d3.scale.linear().domain([0, 130000]),
       spacing : 1,
-      enterHandler : function(d) { console.log(d); }
+      enterHandler : d => store.dispatch(updateColumnChartHighlight(d)),
+      leaveHandler : d => store.dispatch(clearColumnChartHighlight())
     };
     var columnAxisProps = {
       height : 300,

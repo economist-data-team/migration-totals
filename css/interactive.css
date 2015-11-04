@@ -5,7 +5,9 @@
 }
 
 .chart-column {
-  /*opacity : 0.8;*/
+  /* stroke to make sure mouseovers work seamlessly */
+  stroke-width: 1;
+  stroke: transparent;
 }
 
 .column-germany {
@@ -13,4 +15,8 @@
 }
 .column-europe {
   fill: var(--blue-2);
+}
+
+.column-chart-label {
+  font-weight: bold;
 }

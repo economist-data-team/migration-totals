@@ -40,6 +40,8 @@ export default function updateState(state = initialState, action) {
     countryData : countryDataReducer(state.countryData, action),
     appsData : appsDataReducer(state.appsData, action),
     stepperValue : stepperReducer(state.stepperValue, action),
-    appsScale : appsScaleReducer(state.appsScale, action)
+    appsScale : appsScaleReducer(state.appsScale, action),
+    columnChartHighlight : columnChartHighlightReducer(
+      state.columnChartHighlight, action)
   };
 }

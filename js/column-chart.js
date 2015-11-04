@@ -28,8 +28,14 @@ class ColumnSeries extends BoundedSVG {
     columnJoin.exit().remove();
     columnJoin
       .classed(`column-${this.props.name}`, true)
-      .on('mouseenter', (d) => { console.log('hi', d); } )
+      .on('mouseenter', this.props.enterHandler)
       .on('mouseleave', this.props.leaveHandler)
+      .each((d,idx) => {
+        // cache positions
+        d[`y-${this.props.name}`] = this.bottomBound - yScale(this.props.yAccessor(d) + this.props.priorAccessor(d)) + yScale(0);
+        // d[`y-${this.props.name}`] = yScale(this.props.yAccessor(d)) - yScale(0) + y;
+        d.x = xScale(this.props.xAccessor(d, idx)) + this.props.offset
+      })
       .attr({
         height : d => yScale(this.props.yAccessor(d)) - yScale(0),
         y : d => {
