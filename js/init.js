@@ -16,6 +16,8 @@ import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
 
+import countries from './countries.js';
+
 import chroma from 'chroma-js';
 
 import { createStore, compose } from 'redux';
@@ -161,11 +163,17 @@ class ColumnFrame extends React.Component {
 }
 class BarFrame extends React.Component {
   static get defaultProps() {
-    return {};
+    return {
+      data : []
+    };
   }
   render() {
+    var props = {
+      data : this.props.data
+    };
+
     return(<div>
-      <MigrationBarsRaw />
+      <MigrationBarsRaw {...props}/>
     </div>);
   }
 }
@@ -185,7 +193,11 @@ class MigrationFSMRaw extends React.Component {
     return (<ColumnFrame {...columnProps} />);
   }
   get barStep() {
-    return (<BarFrame />);
+    var barProps = {
+      data : this.props.barData
+    };
+
+    return (<BarFrame {...barProps} />);
   }
   render() {
     switch(this.props.step) {
@@ -203,6 +215,7 @@ var MigrationFSM = connectMap({
   step : 'stepperValue',
   columnData : 'appsData',
   columnScale : 'appsScale',
+  barData : 'countryData',
   columnChartHighlight : 'columnChartHighlight'
 })(MigrationFSMRaw);
 
@@ -243,6 +256,9 @@ d3.csv('./data/applications.csv', function(error, data) {
 });
 
 d3.csv('./data/countries.csv', function(error, data) {
-  data = data.map(parseNumerics);
+  data = data.map(parseNumerics).map(d => {
+    d.countryName = countries[d.iso3].name;
+    return d;
+  });
   store.dispatch(updateCountryData(data));
 })
