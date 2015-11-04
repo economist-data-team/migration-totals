@@ -126,14 +126,16 @@ class ColumnFrame extends React.Component {
       scale : this.props.columnAxis
     };
 
+    var highlight = this.props.columnChartHighlight ||
+      (this.props.columnData ? this.props.columnData[this.props.columnData.length - 1] : null);
     // we're rendering this here because it generates the x/y coordinate
     // values that the label will need to render correctly. This is a
     // stupid hack but so it goes
     var chartRendered = (<ColumnChartRaw {...columnChartProps} />);
-    React.render(chartRendered, document.createElement('div'));
+    if(!highlight || !highlight.x) {
+      React.render(chartRendered, document.createElement('div'));
+    }
 
-    var highlight = this.props.columnChartHighlight ||
-      (this.props.columnData ? this.props.columnData[this.props.columnData.length - 1] : null);
     var total = highlight ? highlight.Germany + highlight.otherEurope : 0;
     var columnChartLabelProps = {
       position : highlight ? [highlight.x + 2, highlight['y-europe']] : [null, null],
