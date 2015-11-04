@@ -14,6 +14,7 @@ import ColumnChartRaw from './column-chart.js';
 import ColumnChartLabelRaw from './column-chart-label.js';
 import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
+import MigrationBarsRaw from './migration-bars.js';
 
 import chroma from 'chroma-js';
 
@@ -163,7 +164,9 @@ class BarFrame extends React.Component {
     return {};
   }
   render() {
-    return(<div>Bars!</div>);
+    return(<div>
+      <MigrationBarsRaw />
+    </div>);
   }
 }
 
@@ -230,7 +233,7 @@ var chart = React.render(
   </Provider>
 </div>, document.getElementById('interactive'));
 
-d3.csv('../data/applications.csv', function(error, data) {
+d3.csv('./data/applications.csv', function(error, data) {
   data = data.map(parseNumerics).map((d) => {
     d.month = dateFormatter.parse(d.month);
     return d;
@@ -238,3 +241,8 @@ d3.csv('../data/applications.csv', function(error, data) {
 
   store.dispatch(updateAppsData(data));
 });
+
+d3.csv('./data/countries.csv', function(error, data) {
+  data = data.map(parseNumerics);
+  store.dispatch(updateCountryData(data));
+})
