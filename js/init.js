@@ -316,6 +316,7 @@ d3.csv('./data/applications.csv', function(error, data) {
 d3.csv('./data/countries.csv', function(error, data) {
   data = data.map(parseNumerics).map(d => {
     d.countryName = countries[d.iso3].name;
+    d.key = d.iso3;
     return d;
   });
   store.dispatch(updateCountryData(data));

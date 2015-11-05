@@ -27,7 +27,7 @@ class BarLabels extends BoundedSVG {
         fill : this.props.fillColour
       }
 
-      return (<g transform={transform}>
+      return (<g transform={transform} key={d.key}>
         <rect {...rectProps}></rect>
         <text x="5" y="12" fontSize={fontSize}>{d[this.props.labelColumn]}</text>
       </g>);
@@ -57,7 +57,8 @@ class BarGroup extends BoundedSVG {
         fill : this.props.backgroundColour,
         height: this.props.lineHeight,
         x : range[0],
-        y : idx * lineSpacing
+        y : idx * lineSpacing,
+        key : `background-${d.key}`
       };
       return (<rect {...rectProps}></rect>);
     });
@@ -68,7 +69,8 @@ class BarGroup extends BoundedSVG {
         width : this.props.scale(d[this.props.dataKey]) - this.props.scale(0),
         height : this.props.lineHeight,
         x : range[0],
-        y : idx * lineSpacing
+        y : idx * lineSpacing,
+        key : `bar-${d.key}`
       };
       return (<rect {...rectProps}></rect>);
     });
@@ -115,7 +117,8 @@ export default class MigrationBars extends BoundedSVG {
         backgroundColour : this.props.fillColour,
         barColour : g.colour,
         data : this.props.data,
-        hideBackground : g.hideBackground
+        hideBackground : g.hideBackground,
+        key : g.dataKey
       };
       return (<BarGroup {...barGroupProps} />);
     });
