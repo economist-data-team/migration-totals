@@ -45,6 +45,9 @@ var colours = {
     '#909294',
     '#CBCCCE',
     '#E6E7E8'
+  ],
+  yellow : [
+    '#f9c563'
   ]
 };
 

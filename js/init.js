@@ -230,7 +230,7 @@ var stepGroups = {
     {
       dataKey : 'resettlement',
       scale : resettleScale,
-      colour : 'yellow'
+      colour : colours.yellow[0]
     }
   ]
 };
