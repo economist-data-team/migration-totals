@@ -164,12 +164,20 @@ class ColumnFrame extends React.Component {
 class BarFrame extends React.Component {
   static get defaultProps() {
     return {
-      data : []
+      data : [],
+      groups : [
+        {
+          dataKey : 'positive',
+          scale : d3.scale.linear().domain([0, 150000]).range([120, 585]),
+          colour : 'red'
+        }
+      ]
     };
   }
   render() {
     var props = {
-      data : this.props.data
+      data : this.props.data,
+      groups : this.props.groups
     };
 
     return(<div>
@@ -177,6 +185,55 @@ class BarFrame extends React.Component {
     </div>);
   }
 }
+
+var fullScale = d3.scale.linear().domain([0, 150000]).range([115, 585]);
+var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 295]);
+var relocScale = d3.scale.linear().domain([0,50000]).range([305, 425]);
+var resettleScale = d3.scale.linear().domain([0,50000]).range([435, 555]);
+var stepGroups = {
+  recog : [
+    {
+      dataKey : 'total',
+      scale : fullScale,
+      colour : colours.blue[3]
+    },
+    {
+      dataKey : 'positive',
+      scale : fullScale,
+      colour : colours.red[0],
+      hideBackground : true
+    }
+  ],
+  reloc : [
+    {
+      dataKey : 'positive',
+      scale : positiveScale,
+      colour: colours.red[0]
+    },
+    {
+      dataKey : 'relocation',
+      scale : relocScale,
+      colour: colours.aquamarine[0]
+    }
+  ],
+  resettle : [
+    {
+      dataKey : 'positive',
+      scale : positiveScale,
+      colour: colours.red[0]
+    },
+    {
+      dataKey : 'relocation',
+      scale : relocScale,
+      colour: colours.aquamarine[0]
+    },
+    {
+      dataKey : 'resettlement',
+      scale : resettleScale,
+      colour : 'yellow'
+    }
+  ]
+};
 
 class MigrationFSMRaw extends React.Component {
   static get defaultProps() {
@@ -194,7 +251,8 @@ class MigrationFSMRaw extends React.Component {
   }
   get barStep() {
     var barProps = {
-      data : this.props.barData
+      data : this.props.barData,
+      groups : stepGroups[this.props.step]
     };
 
     return (<BarFrame {...barProps} />);

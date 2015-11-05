@@ -8,17 +8,27 @@ import colours from './econ_colours.js';
 class BarLabels extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
-      data : []
+      data : [],
+      lineHeight : 15,
+      linePadding: 5,
+      fillColour : colours.blue[6]
     });
   }
   render() {
     var fontSize = 14;
 
     var labels = this.props.data.map((d, idx) => {
-      var transform = generateTranslateString(this.leftBound, idx * 20);
+      var transform = generateTranslateString(this.leftBound,
+        idx * (this.props.lineHeight + this.props.linePadding));
+
+      var rectProps = {
+        width : this.rightBound - this.leftBound,
+        height : this.props.lineHeight,
+        fill : this.props.fillColour
+      }
 
       return (<g transform={transform}>
-        <rect width={this.rightBound - this.leftBound} height="15" fill={colours.blue[6]}></rect>
+        <rect {...rectProps}></rect>
         <text x="5" y="12" fontSize={fontSize}>{d[this.props.labelColumn]}</text>
       </g>);
     });
@@ -29,23 +39,90 @@ class BarLabels extends BoundedSVG {
   }
 }
 class BarGroup extends BoundedSVG {
+  static get defaultProps() {
+    return {
+      data : [],
+      lineHeight : 15,
+      backgroundColour: colours.grey[10]
+    };
+  }
+  render() {
+    var range = this.props.scale.range();
+    var rangeSpan = range[1] - range[0];
+    var lineSpacing = this.props.lineHeight + this.props.linePadding;
 
+    var backgrounds = this.props.hideBackground ? [] : this.props.data.map((d, idx) => {
+      var rectProps = {
+        width : rangeSpan,
+        fill : this.props.backgroundColour,
+        height: this.props.lineHeight,
+        x : range[0],
+        y : idx * lineSpacing
+      };
+      return (<rect {...rectProps}></rect>);
+    });
+
+    var bars = this.props.data.map((d, idx) => {
+      var rectProps = {
+        fill : this.props.barColour,
+        width : this.props.scale(d[this.props.dataKey]) - this.props.scale(0),
+        height : this.props.lineHeight,
+        x : range[0],
+        y : idx * lineSpacing
+      };
+      return (<rect {...rectProps}></rect>);
+    });
+
+    return (<g>
+      {backgrounds}
+      {bars}
+    </g>);
+  }
 }
 
 export default class MigrationBars extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
-      data : []
+      data : [],
+      lineHeight : 15,
+      linePadding : 5,
+      fillColour : colours.blue[6],
+      groups : [
+        {
+          dataKey : 'positive',
+          scale : d3.scale.linear().range([120, 250]),
+          barColour : 'red'
+        }
+      ]
     });
   }
   render() {
     var labelsProps = {
       data : this.props.data,
-      labelColumn : 'countryName'
+      labelColumn : 'countryName',
+      lineHeight : this.props.lineHeight,
+      linePadding : this.props.linePadding,
+      fillColour : this.props.fillColour,
+      margin : [10, 480, 10, 10]
     };
+
+    var barGroups = this.props.groups.map(g => {
+      var barGroupProps = {
+        scale : g.scale,
+        dataKey : g.dataKey,
+        lineHeight : this.props.lineHeight,
+        linePadding : this.props.linePadding,
+        backgroundColour : this.props.fillColour,
+        barColour : g.colour,
+        data : this.props.data,
+        hideBackground : g.hideBackground
+      };
+      return (<BarGroup {...barGroupProps} />);
+    });
 
     return (<svg width="595" height="700">
       <BarLabels {...labelsProps}/>
+      {barGroups}
     </svg>);
   }
 }
