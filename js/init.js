@@ -175,21 +175,45 @@ class BarFrame extends React.Component {
     };
   }
   render() {
+    var height = 30;
+    var axes = this.props.groups.map((g, idx) => {
+      if(g.hideBackground) { return null; }
+      var domain = g.scale.domain()
+
+      var axisProps = {
+        scale : g.scale,
+        orient : 'top',
+        presetRange : true,
+        tickPosition: 'tick',
+        margin: [0, 10],
+        tickValues : d3.range(domain[0], domain[1]+1, 25000),
+        tickFormat : v => v/1000,
+        height: height
+      };
+
+      return (<AxisRaw {...axisProps} />);
+    });
+
     var props = {
       data : this.props.data,
       groups : this.props.groups
     };
 
     return(<div>
+      <svg width="595" height={height}>
+        {axes}
+      </svg>
       <MigrationBarsRaw {...props}/>
     </div>);
   }
 }
 
-var fullScale = d3.scale.linear().domain([0, 150000]).range([115, 585]);
+// these scales are for the per-country bars
+var fullScale = d3.scale.linear().domain([0, 150000]).range([115, 575]);
 var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 295]);
-var relocScale = d3.scale.linear().domain([0,50000]).range([305, 425]);
-var resettleScale = d3.scale.linear().domain([0,50000]).range([435, 555]);
+var relocScale = d3.scale.linear().domain([0,50000]).range([315, 435]);
+var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 575]);
+
 var stepGroups = {
   recog : [
     {

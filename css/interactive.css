@@ -20,3 +20,7 @@
 .column-chart-label {
   font-weight: bold;
 }
+
+.axis .tick {
+  font-size: 14px;
+}
