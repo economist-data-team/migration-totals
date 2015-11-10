@@ -1,7 +1,7 @@
 import d3 from 'd3';
 import React from 'react';
 import BoundedSVG from './bounded-svg.js';
-import { Im, generateTranslateString } from './utilities.js';
+import { Im, generateTranslateString, generateRectPolygonString } from './utilities.js';
 
 import colours from './econ_colours.js';
 
@@ -38,6 +38,23 @@ class BarLabels extends BoundedSVG {
     </g>);
   }
 }
+class Bar extends React.Component {
+  static get defaultProps() {
+    return {
+      x : 0, y: 0,
+      width : 10, height : 10
+    };
+  }
+  render() {
+    var polygonProps = {
+      points : generateRectPolygonString(this.props.x, this.props.y, this.props.width, this.props.height),
+      fill : this.props.barColour,
+      key : this.props.barKey
+    };
+
+    return(<polygon {...polygonProps}></polygon>);
+  }
+}
 class BarGroup extends BoundedSVG {
   static get defaultProps() {
     return {
@@ -65,14 +82,14 @@ class BarGroup extends BoundedSVG {
 
     var bars = this.props.data.map((d, idx) => {
       var rectProps = {
-        fill : this.props.barColour,
+        barColour : this.props.barColour,
         width : this.props.scale(d[this.props.dataKey]) - this.props.scale(0),
         height : this.props.lineHeight,
         x : range[0],
         y : idx * lineSpacing,
-        key : `bar-${d.key}`
+        barKey : `bar-${d.key}`
       };
-      return (<rect {...rectProps}></rect>);
+      return (<Bar {...rectProps}></Bar>);
     });
 
     return (<g>

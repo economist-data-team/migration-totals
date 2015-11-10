@@ -94,6 +94,21 @@ export function generateTranslateString(x, y, css) {
 }
 
 /**
+ * generates a polygon points string for a rectangle
+ * we use a polygon rather than a rect here because it makes it much
+ * easier to animate across an axis (i.e. from positive to negative)
+ */
+export function generateRectPolygonString(x, y, width, height) {
+  var startX = x, finalX = x + width;
+  var startY = y, finalY = y + height;
+  var points = [
+    [startX, startY], [finalX, startY],
+    [finalX, finalY], [startX, finalY]
+  ];
+  return points.map(p => p.join(',')).join(' ');
+}
+
+/**
  * Reads in an array that's like a CSS margin declaration: it should
  *   be given in [top right bottom left] order, but will handle
  *   omitted values as CSS does
