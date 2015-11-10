@@ -40,6 +40,27 @@ export function mapValues(obj, fn) {
   return newObj;
 };
 
+/**
+ * maps an array of keys to an object
+ *
+ * @param {Array} arr - the array of keys to map
+ * @param {Object|Function} source - either an object from which to
+ *                                 draw the values from (in which case
+ *                                 this is basically an object filter)
+ *                                 or a function for determining the
+ *                                 value to assign to each key
+ *
+ * @return {Object} - the new generated object
+ */
+export function mapToObject(arr, source) {
+  var getValue = source.call ? source : function(k) {
+    return source[k];
+  }
+  return arr.map(k => ({
+    key : k, value : getValue(k)
+  })).reduce((obj, v) => { obj[v.key] = v.value; return obj; }, {});
+}
+
 
 
 // https://github.com/jquery/jquery/blob/c869a1ef8a031342e817a2c063179a787ff57239/src/core.js#L214
@@ -97,6 +118,13 @@ export function generateTranslateString(x, y, css) {
  * generates a polygon points string for a rectangle
  * we use a polygon rather than a rect here because it makes it much
  * easier to animate across an axis (i.e. from positive to negative)
+ *
+ * @param {Number} x - origin x
+ * @param {Number} y - origin y
+ * @param {Number} width - width in pixels
+ * @param {Number} height - height in pixels
+ *
+ * @return {String}   the polygon string for its `points` attr
  */
 export function generateRectPolygonString(x, y, width, height) {
   var startX = x, finalX = x + width;

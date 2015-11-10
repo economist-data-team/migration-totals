@@ -33,7 +33,7 @@ import updateState from './reducers.js'
 
 // var store = createStore(updateState);
 const DEBUGCREATESTORE = compose(
-  window.devToolsExtension || (f => f)
+  window.devToolsExtension() || (f => f)
 )(createStore);
 var store = DEBUGCREATESTORE(updateState);
 window.store = store;

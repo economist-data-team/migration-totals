@@ -1,7 +1,7 @@
 import d3 from 'd3';
 import React from 'react';
 import BoundedSVG from './bounded-svg.js';
-import { Im, generateTranslateString, generateRectPolygonString } from './utilities.js';
+import { Im, mapToObject, generateTranslateString, generateRectPolygonString } from './utilities.js';
 
 import colours from './econ_colours.js';
 
@@ -38,18 +38,41 @@ class BarLabels extends BoundedSVG {
     </g>);
   }
 }
+
+var barTransitionableProps = ['x', 'y', 'width', 'height', 'barColour'];
 class Bar extends React.Component {
+  constructor(props, ...args) {
+    super(props, ...args);
+    this.state = mapToObject(barTransitionableProps, props);
+    this.animationStep = this.animationStep.bind(this);
+  }
   static get defaultProps() {
     return {
       x : 0, y: 0,
-      width : 10, height : 10
+      width : 10, height : 10,
+      barColour : '#c00',
+      duration : 250
     };
   }
+  componentWillReceiveProps(newProps) {
+    // console.log('new props get!', newProps);
+    d3.timer(this.animationStep);
+    this.interpolators = mapToObject(barTransitionableProps, k => d3.interpolate(this.props[k], newProps[k]));
+    // console.log('interps', this.interpolators);
+  }
+  animationStep(ms) {
+    var progress = ms / this.props.duration;
+    // this.setState(barTransitionableProps.map(k => ({ key : k, value : props[k]})));
+    this.setState(mapToObject(barTransitionableProps, k => this.interpolators[k](progress)));
+    // end the animation
+    if(progress >= 1) { return true; }
+    return false;
+  }
   render() {
+    // console.log(this.state, this.props.barKey);
     var polygonProps = {
-      points : generateRectPolygonString(this.props.x, this.props.y, this.props.width, this.props.height),
-      fill : this.props.barColour,
-      key : this.props.barKey
+      points : generateRectPolygonString(this.state.x, this.state.y, this.state.width, this.state.height),
+      fill : this.state.barColour
     };
 
     return(<polygon {...polygonProps}></polygon>);
@@ -81,13 +104,15 @@ class BarGroup extends BoundedSVG {
     });
 
     var bars = this.props.data.map((d, idx) => {
+      var key = `bar-${d.key}`;
       var rectProps = {
         barColour : this.props.barColour,
         width : this.props.scale(d[this.props.dataKey]) - this.props.scale(0),
         height : this.props.lineHeight,
         x : range[0],
         y : idx * lineSpacing,
-        barKey : `bar-${d.key}`
+        barKey : key,
+        key : key
       };
       return (<Bar {...rectProps}></Bar>);
     });
