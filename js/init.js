@@ -15,6 +15,7 @@ import ColumnChartLabelRaw from './column-chart-label.js';
 import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
+// import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
 
@@ -217,19 +218,15 @@ var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 575]);
 var stepGroups = {
   recog : [
     {
-      dataKey : 'total',
+      groupKey : 'asylum',
+      dataKey : ['total', 'positive'],
       scale : fullScale,
-      colour : colours.blue[3]
-    },
-    {
-      dataKey : 'positive',
-      scale : fullScale,
-      colour : colours.red[0],
-      hideBackground : true
+      colour : [colours.blue[3], colours.red[0]]
     }
   ],
   reloc : [
     {
+      groupKey : 'asylum',
       dataKey : 'positive',
       scale : positiveScale,
       colour: colours.red[0]
@@ -242,6 +239,7 @@ var stepGroups = {
   ],
   resettle : [
     {
+      groupKey : 'asylum',
       dataKey : 'positive',
       scale : positiveScale,
       colour: colours.red[0]
