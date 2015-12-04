@@ -24,3 +24,11 @@
 .axis .tick {
   font-size: 14px;
 }
+
+.stepper-tabs {
+  margin-left: 0.5em;
+}
+
+.stepper-text {
+  font-size: 14px;
+}

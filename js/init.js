@@ -9,12 +9,14 @@ import colours from './econ_colours.js';
 
 import Header from './header.js';
 import StepperRaw, { Step } from './stepper.js';
+import ChartLabel from './chart-label.js';
 import ChartContainer from './chart-container.js';
 import ColumnChartRaw from './column-chart.js';
 import ColumnChartLabelRaw from './column-chart-label.js';
 import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
+import Treemap from './treemap.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
@@ -47,62 +49,35 @@ var Stepper = connectMap({
 
 var steps = [
   new Step('apps', (<span>
-    Applications to the EU are at their highest level since records began.
-    Nearing 100,000 per month. Almost 20% are headed to Germany.</span>), '1'
+    Asylum claims to European Union countries are at their highest
+    since records began. Around one-quarter of this year's applicants
+    are Syrian. But Iraqis and Afghans fleeing war and poverty also
+    account for a large share, as do largely economic migrants from
+    Balkan countries like Kosovo and Albania. Around one-third of
+    claims this year have been made in Germany.</span>), '1'
   ),
   new Step('recog', (<span>
     But not all of these asylum seekers will make it in. Recognition rates vary from country
     to country.</span>), '2'
   ),
   new Step('reloc', (<span>
-    Another way in is through relocation. [Explanation of relocation agreement.]</span>), '3'
+    Under a controversial plan agreed earlier this year, up to 160,000
+    asylum-seekers from Syria, Eritrea and Iraq who reach Italy and
+    Greece will be relocated to most other EU countries (and some,
+      like Norway, that are outside the club). The number each country
+      must accept is calculated according to economic performance,
+      population and previous asylum efforts. Relocations began in
+      October.  </span>), '3'
   ),
   new Step('resettle', (<span>
-    Another way in is through resettlement. [Explanation of resettlement agreement.]</span>), '4'
+    Most EU countries have also agreed to resettle refugees directly
+    from countries like Turkey, Jordan and Lebanon, as well as some
+    camps in Africa. An EU-wide scheme agreed this year was limited to
+    22,000 refugees; a bigger proposal will be put forward in 2016.</span>), '4'
   )
 ];
 
 var dateFormatter = d3.time.format('%d/%m/%y');
-
-class ChartLabel extends BoundedSVG {
-  static get defaultProps() {
-    return Im.extend(super.defaultProps, {
-      fontSize : 14,
-      width : 110,
-      text : 'Chart label'
-    });
-  }
-  get textElements() {
-    // we're just going to make a guess here:
-    var characters = this.props.width * 2 / this.props.fontSize;
-    var words = this.props.text.split(' ');
-    var texts = [];
-
-    while(words.join(' ').length > characters) {
-      let nextLine = [];
-      while(nextLine.join(' ').length < characters) {
-        nextLine.push(words.shift());
-      }
-      if(nextLine.join(' ').length > characters) {
-        words.unshift(nextLine.pop());
-      }
-      texts.push(nextLine);
-    }
-    texts.push(words);
-
-    return texts.map((line, idx) => {
-      return (<text x="5" y={(idx + 1) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
-    });
-  }
-  render() {
-    var textTransform = generateTranslateString(this.leftBound, this.topBound);
-
-    return(<g transform={textTransform} className="label-group">
-      <rect width={this.props.width} height="3" fill="red" ></rect>
-      {this.textElements}
-    </g>)
-  }
-}
 
 class ColumnFrame extends React.Component {
   static get defaultProps() {
@@ -145,9 +120,10 @@ class ColumnFrame extends React.Component {
     }
 
     var total = highlight ? highlight.Germany + highlight.otherEurope : 0;
+    var month = highlight ? new Date(highlight.month) : null;
     var columnChartLabelProps = {
       position : highlight ? [highlight.x + 2, highlight['y-europe']] : [null, null],
-      text : highlight ? `${columnChartMonthFormatter(highlight.month)}: ${commaNumber(highlight.Germany + highlight.otherEurope)}` : '',
+      text : highlight ? `${columnChartMonthFormatter(month)}: ${commaNumber(highlight.Germany + highlight.otherEurope)}` : '',
       verticalOffset : total < 50000 ? -30 : 0
     };
 
@@ -158,7 +134,10 @@ class ColumnFrame extends React.Component {
         <AxisRaw {...columnAxisProps} />
         <ChartLabel text="Monthly asylum applications to Europe"/>
       </svg>
-      <svg>{/* for the treemap */}</svg>
+      <svg width="595" height="400">
+        <ChartLabel text="Asylum applications to Europe" />
+        <Treemap />
+      </svg>
     </div>)
   }
 }
@@ -342,4 +321,14 @@ d3.csv('./data/countries.csv', function(error, data) {
     return d;
   });
   store.dispatch(updateCountryData(data));
-})
+});
+
+d3.csv('./data/incoming.csv', function(error, data) {
+  data = data.map(parseNumerics).map(d => {
+    var iso3 = d.ISO3;
+    d.countryName = iso3 === 'UNK' ? 'Unknown' :
+      iso3 === 'STLS' ? 'Stateless' : countries[iso3].name;
+    d.key = iso3;
+  });
+  store.dispatch(updateSourceData(data));
+});
