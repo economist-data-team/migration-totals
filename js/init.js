@@ -16,7 +16,7 @@ import ColumnChartLabelRaw from './column-chart-label.js';
 import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
-import Treemap from './treemap.js';
+import TreemapRaw from './treemap.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
@@ -36,7 +36,7 @@ import updateState from './reducers.js'
 
 // var store = createStore(updateState);
 const DEBUGCREATESTORE = compose(
-  window.devToolsExtension() || (f => f)
+  window.devToolsExtension && window.devToolsExtension() || (f => f)
 )(createStore);
 var store = DEBUGCREATESTORE(updateState);
 window.store = store;
@@ -46,6 +46,10 @@ var columnChartMonthFormatter = d3.time.format('%B %Y');
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
+
+var Treemap = connectMap({
+  data : 'sourceData'
+})(TreemapRaw);
 
 var steps = [
   new Step('apps', (<span>
@@ -64,10 +68,10 @@ var steps = [
     Under a controversial plan agreed earlier this year, up to 160,000
     asylum-seekers from Syria, Eritrea and Iraq who reach Italy and
     Greece will be relocated to most other EU countries (and some,
-      like Norway, that are outside the club). The number each country
-      must accept is calculated according to economic performance,
-      population and previous asylum efforts. Relocations began in
-      October.  </span>), '3'
+    like Norway, that are outside the club). The number each country
+    must accept is calculated according to economic performance,
+    population and previous asylum efforts. Relocations began in
+    October.  </span>), '3'
   ),
   new Step('resettle', (<span>
     Most EU countries have also agreed to resettle refugees directly
@@ -329,6 +333,7 @@ d3.csv('./data/incoming.csv', function(error, data) {
     d.countryName = iso3 === 'UNK' ? 'Unknown' :
       iso3 === 'STLS' ? 'Stateless' : countries[iso3].name;
     d.key = iso3;
+    return d;
   });
   store.dispatch(updateSourceData(data));
 });
