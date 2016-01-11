@@ -32,3 +32,11 @@
 .stepper-text {
   font-size: 14px;
 }
+
+.node-country-name {
+  font-weight: bold;
+}
+.node-country-value {
+  x : 0;
+  y : 14;
+}

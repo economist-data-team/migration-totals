@@ -131,6 +131,24 @@ class ColumnFrame extends React.Component {
       verticalOffset : total < 50000 ? -30 : 0
     };
 
+    var treemapProps = {
+      margin : [10, 10, 10, 130],
+      height : 400,
+      valueFn : d => d.applicants,
+      colourScale : d => {
+        var rate = d.rate;
+        if(rate === '#N/A') { return colours.grey[3]; }
+        if(rate > 75) { return colours.red[1]; }
+        if(rate > 50) { return colours.blue[3]; }
+        if(rate > 10) { return colours.blue[4]; }
+        if(rate <= 10) { return colours.yellow[0]; }
+        // background and errors, basically
+        return 'white';
+      },
+      dataSort : (a,b) => a.applicants - b.applicants,
+      valueFormat : d3.format(',.0f')
+    }
+
     return(<div>
       <svg width="595" height="300">
         {chartRendered}
@@ -140,7 +158,7 @@ class ColumnFrame extends React.Component {
       </svg>
       <svg width="595" height="400">
         <ChartLabel text="Asylum applications to Europe" />
-        <Treemap />
+        <Treemap {...treemapProps} />
       </svg>
     </div>)
   }
