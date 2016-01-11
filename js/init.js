@@ -134,6 +134,18 @@ class ColumnFrame extends React.Component {
     var treemapProps = {
       margin : [10, 10, 10, 130],
       height : 400,
+      dataProcessor : data => {
+        return {
+          hideText : true,
+          children : [
+            // applicant numbers here are totally a hack
+            { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
+            { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
+            { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
+            { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
+          ]
+        };
+      },
       valueFn : d => d.applicants,
       colourScale : d => {
         var rate = d.rate;

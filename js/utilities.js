@@ -236,8 +236,12 @@ function set(obj, key, value) {
   return ret;
 }
 
+function filter(obj, fn, thisVal) {
+  return _.filter(obj, fn, thisVal);
+}
+
 export var Im = {
-  extend, set
+  extend, set, filter
 };
 
 

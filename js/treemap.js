@@ -9,6 +9,7 @@ export default class Treemap extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
       data : [],
+      dataProcessor : data => data,
       valueFn : d => d.value,
       colourScale : d => 'red',
       dataSort : (a,b) => 0,
@@ -28,12 +29,9 @@ export default class Treemap extends BoundedSVG {
       .sort(this.props.dataSort);
 
     // extend copies the array first
-    var data = Im.extend(this.props.data);
-    var rootNode = {
-      children : data
-    };
+    var data = this.props.dataProcessor(this.props.data);
 
-    var nodes = sel.datum(rootNode).selectAll('.node')
+    var nodes = sel.datum(data).selectAll('.node')
       .data(treemap.nodes);
     var nodeEnter = nodes.enter().append('g')
       .classed('node', true)
@@ -50,7 +48,7 @@ export default class Treemap extends BoundedSVG {
           width : d => Math.max(0, d.dx - self.props.spacing),
           height : d => Math.max(0, d.dy - self.props.spacing)
         });
-      if(d.applicants > 18000) {
+      if(d.applicants && d.hideText !== true && d.dx > 50 && d.dy > 30) {
         var txt = sel.append('text')
           .classed('node-label', true)
           .attr({
