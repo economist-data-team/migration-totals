@@ -1,12 +1,15 @@
 import d3 from 'd3';
 import {
   UPDATE_SOURCE_DATA, UPDATE_COUNTRY_DATA, UPDATE_APPS_DATA,
-  UPDATE_STEPPER_VALUE, UPDATE_COLUMN_CHART_HIGHLIGHT
+  UPDATE_STEPPER_VALUE, UPDATE_COLUMN_CHART_HIGHLIGHT,
+  CHANGE_TOOLTIP
 } from './actions.js';
 
 var initialState = {
   data : [],
-  stepperValue : 'apps'
+  stepperValue : 'apps',
+  tooltipShow : false,
+  tooltipContents : null
 };
 
 function sourceDataReducer(state = [], action) {
@@ -34,6 +37,17 @@ function columnChartHighlightReducer(state = '', action) {
   return action.data;
 };
 
+
+function tooltipShowReducer(state = initialState.tooltipShow, action) {
+  if(action.type !== CHANGE_TOOLTIP) { return state; }
+  return action.show;
+}
+function tooltipContentsReducer(state = initialState.tooltipContents, action) {
+  if(action.type !== CHANGE_TOOLTIP) { return state; }
+  if(action.contents) { return action.contents; }
+  return null;
+}
+
 export default function updateState(state = initialState, action) {
   return {
     sourceData : sourceDataReducer(state.sourceData, action),
@@ -42,6 +56,8 @@ export default function updateState(state = initialState, action) {
     stepperValue : stepperReducer(state.stepperValue, action),
     appsScale : appsScaleReducer(state.appsScale, action),
     columnChartHighlight : columnChartHighlightReducer(
-      state.columnChartHighlight, action)
+      state.columnChartHighlight, action),
+    tooltipShow : tooltipShowReducer(state.tooltipShow, action),
+    tooltipContents : tooltipContentsReducer(state.tooltipContents, action)
   };
 }

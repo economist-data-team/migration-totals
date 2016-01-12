@@ -17,6 +17,7 @@ import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
 import TreemapRaw from './treemap.js';
+import TooltipRaw from './tooltip.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
@@ -30,7 +31,8 @@ import {
   updateSourceData, updateCountryData,
   updateAppsData, updateStepperValue,
   updateColumnChartHighlight,
-  clearColumnChartHighlight
+  clearColumnChartHighlight,
+  showTooltip, hideTooltip
 } from './actions.js';
 import updateState from './reducers.js'
 
@@ -50,6 +52,21 @@ var Stepper = connectMap({
 var Treemap = connectMap({
   data : 'sourceData'
 })(TreemapRaw);
+
+var Tooltip = connect(function(state) {
+  return {
+    show : state.tooltipShow,
+    template : (d) => {
+      var contents = state.tooltipContents;
+      console.log(d, contents);
+      if(!contents) { return ''; }
+      return (<div>
+        <h4>{contents.countryName}</h4>
+        <span>{contents.applicants}</span>
+      </div>);
+    }
+  };
+})(TooltipRaw);
 
 var steps = [
   new Step('apps', (<span>
@@ -158,7 +175,13 @@ class ColumnFrame extends React.Component {
         return 'white';
       },
       dataSort : (a,b) => a.applicants - b.applicants,
-      valueFormat : d3.format(',.0f')
+      valueFormat : d3.format(',.0f'),
+      enterFn : d => {
+        store.dispatch(showTooltip(d));
+      },
+      leaveFn : d => {
+        store.dispatch(hideTooltip());
+      }
     }
 
     return(<div>
@@ -324,6 +347,7 @@ class Chart extends ChartContainer {
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
         <MigrationFSM />
+        <Tooltip />
       </div>
     );
   }

@@ -14,7 +14,9 @@ export default class Treemap extends BoundedSVG {
       colourScale : d => 'red',
       dataSort : (a,b) => 0,
       spacing : 1,
-      valueFormat : v => v
+      valueFormat : v => v,
+      enterFn : d => d,
+      leaveFn : d => d
     });
   }
   render() {
@@ -35,6 +37,9 @@ export default class Treemap extends BoundedSVG {
       .data(treemap.nodes);
     var nodeEnter = nodes.enter().append('g')
       .classed('node', true)
+      .on('mouseenter', this.props.enterFn)
+      .on('mouseleave', this.props.leaveFn)
+      .on('touchstart', this.props.enterFn)
       .attr({
         transform : d => generateTranslateString(d.x, d.y)
       });
