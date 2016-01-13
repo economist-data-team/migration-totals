@@ -130,7 +130,7 @@ class ColumnFrame extends React.Component {
       margin : [260, 10, 10],
       tickValues : d3.range(0, 90, 12),
       tickFormat : v => Math.floor(v/12) + 2008,
-      scale : this.props.columnAxis
+      scale : this.props.columnScale
     };
 
     var highlight = this.props.columnChartHighlight ||
