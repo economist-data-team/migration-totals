@@ -19,33 +19,24 @@ export default class ChartLabel extends BoundedSVG {
     var texts = [];
     var subtitles = [];
 
-    while(words.join(' ').length > characters) {
-      let nextLine = [];
-      while(nextLine.join(' ').length < characters) {
-        nextLine.push(words.shift());
-      }
-      if(nextLine.join(' ').length > characters) {
-        words.unshift(nextLine.pop());
-      }
-      texts.push(nextLine);
+    function textFunc(_words, _texts) {
+
+         while(_words.join(' ').length > characters) {
+              let nextLine = [];
+               while(nextLine.join(' ').length < characters) {
+               nextLine.push(_words.shift());
+              }
+              if(nextLine.join(' ').length > characters) {
+                _words.unshift(nextLine.pop());
+              }
+              _texts.push(nextLine);
+          }
+
+         _texts.push(_words);
     }
 
-    texts.push(words);
-
-
-    while(wordssub.join(' ').length > characters) {
-      let nextLine = [];
-      while(nextLine.join(' ').length < characters) {
-        nextLine.push(wordssub.shift());
-      }
-      if(nextLine.join(' ').length > characters) {
-        wordssub.unshift(nextLine.pop());
-      }
-      subtitles.push(nextLine);
-    }
-
-    subtitles.push(wordssub);
-
+    textFunc(words, texts);
+    textFunc(wordssub, subtitles);
 
 
         return texts.map((line, idx) => {
