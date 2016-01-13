@@ -25,6 +25,9 @@
   font-size: 14px;
 }
 
+.stepper-text {
+  flex: 1;
+}
 .stepper-tabs {
   margin-left: 0.5em;
 }

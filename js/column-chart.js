@@ -101,7 +101,8 @@ export default class ColumnChart extends BoundedSVG {
       xScale : d3.scale.linear().domain([0,4]),
       yScale : d3.scale.linear().domain([0,300]),
       enterHandler : d => null,
-      leaveHandler : d => null
+      leaveHandler : d => null,
+      backgroundColour : '#e6e6e6'
     };
   }
   render() {
@@ -137,7 +138,7 @@ export default class ColumnChart extends BoundedSVG {
 
     return(
       <g height={this.props.height} width={this.props.width}>
-        <polygon fill="#e6e6e6" points={this.boundingPolygonPoints}></polygon>
+        <polygon fill={this.props.backgroundColour} points={this.boundingPolygonPoints}></polygon>
         {columns}
       </g>
     );

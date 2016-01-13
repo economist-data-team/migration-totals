@@ -123,7 +123,8 @@ class ColumnFrame extends React.Component {
       enterHandler : d => store.dispatch(updateColumnChartHighlight(d)),
       leaveHandler : d => store.dispatch(clearColumnChartHighlight()),
       data : this.props.columnData,
-      xScale : this.props.columnScale
+      xScale : this.props.columnScale,
+      backgroundColour : '#E4EDF1'; //colours.blue[6]
     };
     var columnAxisProps = {
       height : 300,
@@ -201,7 +202,7 @@ class ColumnFrame extends React.Component {
         <ChartLabel text="Asylum applications to Europe" />
         <Treemap {...treemapProps} />
       </svg>
-    </div>)
+    </div>);
   }
 }
 class BarFrame extends React.Component {
