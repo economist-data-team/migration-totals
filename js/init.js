@@ -81,8 +81,10 @@ var steps = [
   )
 ];
 
+// Time format function
 var dateFormatter = d3.time.format('%d/%m/%y');
 
+// React Component
 class ColumnFrame extends React.Component {
   static get defaultProps() {
     return {
@@ -91,6 +93,8 @@ class ColumnFrame extends React.Component {
       columnChartHighlight : null
     };
   }
+  
+  // Render function
   render() {
     var columnChartProps = {
       margin : [10, 10, 40],
@@ -105,6 +109,7 @@ class ColumnFrame extends React.Component {
       data : this.props.columnData,
       xScale : this.props.columnScale
     };
+
     var columnAxisProps = {
       height : 300,
       margin : [260, 10, 10],
@@ -157,9 +162,11 @@ class ColumnFrame extends React.Component {
         // background and errors, basically
         return 'white';
       },
+      // sort comparison function
       dataSort : (a,b) => a.applicants - b.applicants,
       valueFormat : d3.format(',.0f')
     }
+
 
     return(<div>
       <svg width="595" height="300">
@@ -175,6 +182,7 @@ class ColumnFrame extends React.Component {
     </div>)
   }
 }
+
 class BarFrame extends React.Component {
   static get defaultProps() {
     return {
@@ -292,6 +300,7 @@ class MigrationFSMRaw extends React.Component {
 
     return (<BarFrame {...barProps} />);
   }
+
   render() {
     switch(this.props.step) {
       case 'apps':
@@ -328,10 +337,13 @@ class Chart extends ChartContainer {
     );
   }
 }
+
 var props = {
   height : 320
 };
 
+// Not sure where this fits on
+// React Chart render 
 var chart = React.render(
 <div>
   <Provider store={store}>
@@ -339,6 +351,8 @@ var chart = React.render(
   </Provider>
 </div>, document.getElementById('interactive'));
 
+
+//load in applications data from CSV file
 d3.csv('./data/applications.csv', function(error, data) {
   data = data.map(parseNumerics).map((d) => {
     d.month = dateFormatter.parse(d.month);
@@ -348,6 +362,7 @@ d3.csv('./data/applications.csv', function(error, data) {
   store.dispatch(updateAppsData(data));
 });
 
+//load in countries data from CSV file
 d3.csv('./data/countries.csv', function(error, data) {
   data = data.map(parseNumerics).map(d => {
     d.countryName = countries[d.iso3].name;
@@ -357,6 +372,7 @@ d3.csv('./data/countries.csv', function(error, data) {
   store.dispatch(updateCountryData(data));
 });
 
+//load in "incoming" data from CSV file
 d3.csv('./data/incoming.csv', function(error, data) {
   data = data.map(parseNumerics).map(d => {
     var iso3 = d.ISO3;
