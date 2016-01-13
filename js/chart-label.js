@@ -16,10 +16,10 @@ export default class ChartLabel extends BoundedSVG {
     var characters = this.props.width * 2 / this.props.fontSize;
     var words = this.props.text.split(' ');
     var wordssub = this.props.subtitle.split(' ');
-    var texts = [];
-    var subtitles = [];
 
-    function textFunc(_words, _texts) {
+    function textFunc(_words) {
+
+      var _texts = [];
 
          while(_words.join(' ').length > characters) {
               let nextLine = [];
@@ -33,10 +33,12 @@ export default class ChartLabel extends BoundedSVG {
           }
 
          _texts.push(_words);
+         return _texts;
     }
 
-    textFunc(words, texts);
-    textFunc(wordssub, subtitles);
+    var texts = textFunc(words);
+    var subtitles = textFunc(wordssub);
+
 
 
         return texts.map((line, idx) => {

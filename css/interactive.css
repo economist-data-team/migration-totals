@@ -32,6 +32,9 @@
 .stepper-text {
   font-size: 14px;
 }
+.label-group-subtitle {
+  font-weight: normal;
+}
 
 .node-country-name {
   font-weight: bold;

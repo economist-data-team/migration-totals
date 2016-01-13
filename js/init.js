@@ -38,23 +38,27 @@ import updateState from './reducers.js'
 const DEBUGCREATESTORE = compose(
   window.devToolsExtension && window.devToolsExtension() || (f => f)
 )(createStore);
+
 var store = DEBUGCREATESTORE(updateState);
 window.store = store;
 
+// Time format function
 var columnChartMonthFormatter = d3.time.format('%B %Y');
 
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
 
+// Call the treemap at once
 var Treemap = connectMap({
   data : 'sourceData'
 })(TreemapRaw);
 
+// Array of Step constructors
 var steps = [
   new Step('apps', (<span>
     Asylum claims to European Union countries are at their highest
-    since records began. Around one-quarter of this year's applicants
+    since records began. Around one-quarter of this years applicants
     are Syrian. But Iraqis and Afghans fleeing war and poverty also
     account for a large share, as do largely economic migrants from
     Balkan countries like Kosovo and Albania. Around one-third of
@@ -136,22 +140,25 @@ class ColumnFrame extends React.Component {
       verticalOffset : total < 50000 ? -30 : 0
     };
 
+    // Treemap object
     var treemapProps = {
       margin : [10, 10, 10, 130],
       height : 400,
       dataProcessor : data => {
-        return {
-          hideText : true,
-          children : [
-            // applicant numbers here are totally a hack
-            { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
-            { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
-            { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
-            { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
-          ]
-        };
-      },
-      valueFn : d => d.applicants,
+         return {
+           hideText : true,
+           children : [
+             // applicant numbers here are totally a hack
+             { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
+             { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
+             { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
+             { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
+           ]
+         };
+       },
+
+       valueFn : d => d.applicants,
+      // color fill funciton
       colourScale : d => {
         var rate = d.rate;
         if(rate === '#N/A') { return colours.grey[3]; }
