@@ -44,6 +44,7 @@ var store = DEBUGCREATESTORE(updateState);
 window.store = store;
 
 var columnChartMonthFormatter = d3.time.format('%B %Y');
+var applicantFormat = d3.format(',.0f');
 
 var Stepper = connectMap({
   value : 'stepperValue'
@@ -53,16 +54,18 @@ var Treemap = connectMap({
   data : 'sourceData'
 })(TreemapRaw);
 
+var mousePosition = {x:0, y:0};
 var Tooltip = connect(function(state) {
   return {
     show : state.tooltipShow,
+    mouseX : mousePosition.x,
+    mouseY : mousePosition.y,
     template : (d) => {
       var contents = state.tooltipContents;
-      console.log(d, contents);
       if(!contents) { return ''; }
       return (<div>
         <h4>{contents.countryName}</h4>
-        <span>{contents.applicants}</span>
+        <span>{applicantFormat(contents.applicants)}</span>
       </div>);
     }
   };
@@ -175,8 +178,11 @@ class ColumnFrame extends React.Component {
         return 'white';
       },
       dataSort : (a,b) => a.applicants - b.applicants,
-      valueFormat : d3.format(',.0f'),
+      valueFormat : applicantFormat,
       enterFn : d => {
+        // console.log('enter', d3.event);
+        mousePosition.x = d3.event.pageX;
+        mousePosition.y = d3.event.pageY;
         store.dispatch(showTooltip(d));
       },
       leaveFn : d => {
@@ -347,7 +353,7 @@ class Chart extends ChartContainer {
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
         <MigrationFSM />
-        <Tooltip />
+        <Tooltip bottomAnchor={true} />
       </div>
     );
   }

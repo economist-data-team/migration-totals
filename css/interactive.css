@@ -40,3 +40,8 @@
   x : 0;
   y : 14;
 }
+
+.tooltip {
+  padding: 2px 5px;
+  pointer-events: none;
+}

@@ -14,6 +14,7 @@ export default class Tooltip extends React.Component {
         return (<span>Hark! a tooltip.</span>);
       },
       show : false,
+      bottomAnchor : false,
       mouseX : 10,
       mouseY : 10,
       fullWidth : 595
@@ -22,6 +23,7 @@ export default class Tooltip extends React.Component {
   render() {
     var x = this.props.mouseX;
     var rightAlign = x > this.props.fullWidth / 2;
+    var verticalAnchor = this.props.bottomAnchor ? 'bottom' : 'top';
 
     var tooltipProps = {
       style : {
@@ -29,10 +31,20 @@ export default class Tooltip extends React.Component {
         right : rightAlign ? this.props.fullWidth - x : '',
         top : this.props.mouseY
       },
-      className : ['tooltip', this.props.show ? null : 'tooltip-hidden']
+      className : ['tooltip-outer', this.props.show ? null : 'tooltip-hidden']
         .filter((n => n != null)).join(' ')
     };
+    // tooltipProps.style[verticalAnchor] = this.props.mouseY;
+    // console.log(this.props.bottomAnchor, verticalAnchor);
 
-    return(<div {...tooltipProps}>{this.props.template(this.props)}</div>);
+    var innerDivStyle = {
+      left : rightAlign ? '' : 0,
+      right : rightAlign ? 0 : ''
+    };
+    innerDivStyle[verticalAnchor] = 0;
+
+    var innerDiv = (<div className='tooltip' style={innerDivStyle}>{this.props.template(this.props)}</div>);
+
+    return(<div {...tooltipProps}>{innerDiv}</div>);
   }
 }
