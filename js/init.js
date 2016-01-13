@@ -124,7 +124,7 @@ class ColumnFrame extends React.Component {
       leaveHandler : d => store.dispatch(clearColumnChartHighlight()),
       data : this.props.columnData,
       xScale : this.props.columnScale,
-      backgroundColour : '#E4EDF1'; //colours.blue[6]
+      backgroundColour : '#E4EDF1' //colours.blue[6]
     };
     var columnAxisProps = {
       height : 300,
