@@ -424,12 +424,12 @@ d3.csv('./data/countries.csv', function(error, data) {
 
   var span = end - start;
   // 20px for gutters
-  var factor = (span - 20) / (positiveMax + reMax * 2);
+  var factor = (span - 40) / (positiveMax + reMax * 2);
   var positions = [0, positiveMax, positiveMax + reMax, positiveMax + reMax * 2].map(n => start + n * factor);
 
   positiveScale.domain([0, positiveMax]).range(positions.slice(0,2));
-  relocScale.domain([0, reMax]).range(positions.slice(1,3).map(n => n + 10));
-  resettleScale.domain([0, reMax]).range(positions.slice(2,4).map(n => n + 20));
+  relocScale.domain([0, reMax]).range(positions.slice(1,3).map(n => n + 20));
+  resettleScale.domain([0, reMax]).range(positions.slice(2,4).map(n => n + 40));
 
   store.dispatch(updateCountryData(data));
 });
