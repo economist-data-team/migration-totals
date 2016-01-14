@@ -2,7 +2,7 @@
 
 import d3 from 'd3';
 import React from 'react';
-import { Im, parseNumerics, connectMap, generateTranslateString,  commaNumber }
+import { Im, parseNumerics, connectMap, generateTranslateString,  commaNumber, isNumeric }
   from './utilities.js';
 
 import colours from './econ_colours.js';
@@ -101,7 +101,13 @@ var steps = [
   )
 ];
 
-var dateFormatter = d3.time.format('%d/%m/%y');
+var dateFormatter = d3.time.format('%d/%m/%Y');
+
+function roundScaleMaximum(value, unit=1) {
+  var magnitude = Math.floor(Math.log10(value));
+  var roundingPoint = Math.pow(10, magnitude - 1) * unit;
+  return Math.ceil((value + 0.5 * roundingPoint) / roundingPoint) * roundingPoint;
+}
 
 class ColumnFrame extends React.Component {
   static get defaultProps() {
@@ -112,13 +118,14 @@ class ColumnFrame extends React.Component {
     };
   }
   render() {
+    var maximum = roundScaleMaximum(this.props.columnData.map(d => d.Total).reduce((memo, n) => Math.max(memo, n), 0));
     var columnChartProps = {
       margin : [10, 10, 40],
       series : [
         { name : 'germany', accessor : d => d.Germany },
         { name : 'europe', accessor : d => d.otherEurope }
       ],
-      yScale : d3.scale.linear().domain([0, 130000]),
+      yScale : d3.scale.linear().domain([0, maximum]),
       spacing : 1,
       enterHandler : d => store.dispatch(updateColumnChartHighlight(d)),
       leaveHandler : d => store.dispatch(clearColumnChartHighlight()),
@@ -253,7 +260,7 @@ class BarFrame extends React.Component {
 }
 
 // these scales are for the per-country bars
-var fullScale = d3.scale.linear().domain([0, 150000]).range([115, 575]);
+var fullScale = d3.scale.linear().domain([0, 200000]).range([115, 575]);
 var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 295]);
 var relocScale = d3.scale.linear().domain([0,50000]).range([315, 435]);
 var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 575]);
@@ -373,6 +380,7 @@ var chart = React.render(
 d3.csv('./data/applications.csv', function(error, data) {
   data = data.map(parseNumerics).map((d) => {
     d.month = dateFormatter.parse(d.month);
+    d.otherEurope = d.Total - d.Germany;
     return d;
   });
 
@@ -384,7 +392,45 @@ d3.csv('./data/countries.csv', function(error, data) {
     d.countryName = countries[d.iso3].name;
     d.key = d.iso3;
     return d;
+  }).sort((a,b) => {
+    // sort NA's to the bottom
+    if(a.total === 'NA') { return 1; }
+    if(b.total === 'NA') { return -1; }
+    return b.total - a.total;
   });
+
+  // now we're going to recalculate some scales...
+
+  // the easy scale to work out is the full one
+  var fullScaleMax = roundScaleMaximum(data.map(d => d.total)
+    .filter(isNumeric)
+    .reduce((memo, n) => Math.max(memo, n), 0),
+  0.5);
+  fullScale.domain([0, fullScaleMax]);
+
+  var positiveMax = roundScaleMaximum(data.map(d => d.positive)
+    .filter(isNumeric)
+    .reduce((memo, n) => Math.max(memo, n), 0),
+  5);
+  var reMax = roundScaleMaximum(
+    Math.max(
+      data.map(d => d.relocation).filter(isNumeric).reduce((memo, n) => Math.max(memo, n), 0),
+      data.map(d => d.resettlement).filter(isNumeric).reduce((memo, n) => Math.max(memo, n), 0)
+    ),
+  5);
+
+  var start = positiveScale.range()[0];
+  var end = resettleScale.range()[1];
+
+  var span = end - start;
+  // 20px for gutters
+  var factor = (span - 20) / (positiveMax + reMax * 2);
+  var positions = [0, positiveMax, positiveMax + reMax, positiveMax + reMax * 2].map(n => start + n * factor);
+
+  positiveScale.domain([0, positiveMax]).range(positions.slice(0,2));
+  relocScale.domain([0, reMax]).range(positions.slice(1,3).map(n => n + 10));
+  resettleScale.domain([0, reMax]).range(positions.slice(2,4).map(n => n + 20));
+
   store.dispatch(updateCountryData(data));
 });
 
