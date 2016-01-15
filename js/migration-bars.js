@@ -5,6 +5,14 @@ import { Im, mapToObject, generateTranslateString, generateRectPolygonString } f
 
 import colours from './econ_colours.js';
 
+class MigrationColumnLabels extends BoundedSVG {
+  static get defaultProps() {
+    return Im.extend(super.defaultProps, {
+
+    });
+  }
+}
+
 class BarLabels extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
@@ -51,7 +59,8 @@ class Bar extends React.Component {
       x : 0, y: 0,
       width : 10, height : 10,
       barColour : '#c00',
-      duration : 250
+      duration : 250,
+      alt : null
     };
   }
   componentWillReceiveProps(newProps) {
@@ -69,7 +78,6 @@ class Bar extends React.Component {
     return false;
   }
   render() {
-    // console.log(this.state, this.props.barKey);
     var polygonProps = {
       points : generateRectPolygonString(this.state.x, this.state.y, this.state.width, this.state.height),
       fill : this.state.barColour
@@ -83,7 +91,8 @@ class BarGroup extends BoundedSVG {
     return {
       data : [],
       lineHeight : 15,
-      backgroundColour: colours.grey[10]
+      backgroundColour: colours.grey[10],
+      alts : {}
     };
   }
   render() {
@@ -111,10 +120,20 @@ class BarGroup extends BoundedSVG {
     if(!dataKey.push) { dataKey = [dataKey]; }
     if(!barColour.push) { barColour = [barColour]; }
 
+    var alts = this.props.alts;
+    var altKeys = Object.keys(alts);
+
     var bars = dataKey.map((dKey, dIdx) => {
       return this.props.data.map((d, idx) => {
+        var value = d[dKey];
         var key = `bar-${dKey}-${d.key}`;
-        var rectProps = {
+        if(altKeys.indexOf(value) > -1 ) {
+          let transform = generateTranslateString(range[0], idx * lineSpacing);
+          return (<g transform={transform}>
+            {alts[value]}
+          </g>);
+        }
+        var barProps = {
           barColour : barColour[dIdx],
           width : this.props.scale(d[dKey]) - this.props.scale(0),
           height : this.props.lineHeight,
@@ -123,7 +142,7 @@ class BarGroup extends BoundedSVG {
           barKey : key,
           key : key
         };
-        return (<Bar {...rectProps}></Bar>);
+        return (<Bar {...barProps}></Bar>);
       });
     // we have to flatten the array here so the keys work properly
     }).reduce((memo, v) => memo.concat(v),[]);
@@ -171,7 +190,8 @@ export default class MigrationBars extends BoundedSVG {
         barColour : g.colour,
         data : this.props.data,
         hideBackground : g.hideBackground,
-        key : g.groupKey || g.dataKey
+        key : g.groupKey || g.dataKey,
+        alts: g.alts
       };
       return (<BarGroup {...barGroupProps} />);
     });

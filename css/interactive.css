@@ -25,6 +25,9 @@
   font-size: 14px;
 }
 
+.stepper-text {
+  flex: 1;
+}
 .stepper-tabs {
   margin-left: 0.5em;
 }
@@ -50,4 +53,18 @@
 .node-country-value {
   x : 0;
   y : 14;
+}
+
+.tooltip {
+  padding: 2px 5px;
+  pointer-events: none;
+}
+
+.reloc-note {
+  font-size: 13px;
+  font-style: italic;
+}
+.migration-column-label {
+  font-weight: bold;
+  font-size: 14px;
 }

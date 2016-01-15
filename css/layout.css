@@ -91,23 +91,27 @@
     padding: 5px 10px;
   }
 
-  .tooltip {
+  .tooltip-outer {
     position: absolute;
     max-width: 50%;
-    border: 1px solid var(--grey-3);
-    background-color: white;
 
     z-index: 1000;
 
     &.tooltip-hidden {
       display: none;
     }
+
+    .tooltip {
+      position: absolute;
+      border: 1px solid var(--grey-3);
+      background-color: white;
+    }
   }
 
   .stepper {
     margin: 10px;
     padding: 10px;
-    background-color: var(--grey-10);
+    background-color: #E4EDF1; /* var(--blue-7); --grey-10 #D5E3EA */
 
     display: flex;
   }
