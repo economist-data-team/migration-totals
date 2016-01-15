@@ -3,8 +3,10 @@
 import d3 from 'd3';
 import React from 'react';
 import { Im, parseNumerics, connectMap, generateTranslateString,
-  generateRectPolygonString, commaNumber, isNumeric }
+  generateRectPolygonString, commaNumber, isNumeric, addDOMProperty }
   from './utilities.js';
+
+addDOMProperty('fontStyle', 'font-style');
 
 import colours from './econ_colours.js';
 
@@ -280,7 +282,7 @@ class BarFrame extends React.Component {
     };
   }
   render() {
-    var height = 30;
+    var axisHeight = 65;
     var axes = this.props.groups.map((g, idx) => {
       if(g.hideBackground) { return null; }
       var domain = g.scale.domain()
@@ -290,10 +292,10 @@ class BarFrame extends React.Component {
         orient : 'top',
         presetRange : true,
         tickPosition: 'tick',
-        margin: [0, 10],
+        margin: [25, 10, 0],
         tickValues : d3.range(domain[0], domain[1]+1, 25000),
         tickFormat : v => v/1000,
-        height: height
+        height: axisHeight
       };
 
       return (<AxisRaw {...axisProps} />);
@@ -308,11 +310,12 @@ class BarFrame extends React.Component {
       groups : this.props.groups
     };
 
+    // -1 on the x position of the thousands label is a totally
+    // eyeballed kloodge
     return(<div>
-      <svg width="595" height="40">
+      <svg width="595" height={axisHeight}>
         <MigrationColumnHeader {...headerProps} />
-      </svg>
-      <svg width="595" height={height}>
+        <text x={fullScale.range()[0] - 1} y="40" fontSize="13" fontStyle="italic">’000</text>
         {axes}
       </svg>
       <MigrationBarsRaw {...props}/>
