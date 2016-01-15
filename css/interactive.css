@@ -48,3 +48,8 @@
   padding: 2px 5px;
   pointer-events: none;
 }
+
+.reloc-note {
+  font-size: 13px;
+  font-style: italic;
+}

@@ -265,6 +265,11 @@ var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 295]);
 var relocScale = d3.scale.linear().domain([0,50000]).range([315, 435]);
 var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 575]);
 
+var relocAlts = {
+  'NONEU'  : (<text y="12" x="2" className="reloc-note" fill={colours.grey[5]}>Not an EU member</text>),
+  'SUPPLY' : (<text y="12" x="2" className="reloc-note" fill={colours.aquamarine[0]}>Supplying refugees</text>),
+  'EXEMPT' : (<text y="12" x="2" className="reloc-note" fill={colours.red[2]}>Exempt by treaty</text>)
+};
 var stepGroups = {
   recog : [
     {
@@ -284,7 +289,8 @@ var stepGroups = {
     {
       dataKey : 'relocation',
       scale : relocScale,
-      colour: colours.aquamarine[0]
+      colour: colours.aquamarine[0],
+      alts : relocAlts
     }
   ],
   resettle : [
@@ -297,7 +303,8 @@ var stepGroups = {
     {
       dataKey : 'relocation',
       scale : relocScale,
-      colour: colours.aquamarine[0]
+      colour: colours.aquamarine[0],
+      alts : relocAlts
     },
     {
       dataKey : 'resettlement',
