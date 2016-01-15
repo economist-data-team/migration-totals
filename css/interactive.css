@@ -36,6 +36,14 @@
   font-weight: normal;
 }
 
+.label-group-legend {
+  font-weight: normal;
+}
+
+.label-group-source {
+  font-weight: normal;
+}
+
 .node-country-name {
   font-weight: bold;
 }

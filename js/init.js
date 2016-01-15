@@ -191,7 +191,7 @@ class ColumnFrame extends React.Component {
       </svg>
       <svg width="595" height="50">
         <SourceLabel text="Source: to come" />
-        </svg>
+       </svg>
     </div>)
   }
 }
