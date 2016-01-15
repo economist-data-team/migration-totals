@@ -2,7 +2,8 @@
 
 import d3 from 'd3';
 import React from 'react';
-import { Im, parseNumerics, connectMap, generateTranslateString,  commaNumber, isNumeric }
+import { Im, parseNumerics, connectMap, generateTranslateString,
+  generateRectPolygonString, commaNumber, isNumeric }
   from './utilities.js';
 
 import colours from './econ_colours.js';
@@ -212,6 +213,59 @@ class ColumnFrame extends React.Component {
     </div>);
   }
 }
+
+class MigrationColumnHeaderRaw extends BoundedSVG {
+  static get defaultProps() {
+    return Im.extend(super.defaultProps, {});
+  }
+  render() {
+    var toppers = this.props.groups.map(gr => {
+      var range = gr.scale.range();
+      var polygonProps = {
+        fill : gr.colour.push ? gr.colour[0] : gr.colour,
+        points : generateRectPolygonString(range[0], 0, range[1], 5, true)
+      };
+
+      return (<polygon {...polygonProps}></polygon>)
+    });
+
+    var labels = this.props.groups.map(gr => {
+      var range = gr.scale.range();
+      var label;
+
+      if(gr.label.push) {
+        // it's an array!
+        label = gr.label.map((l, idx) => {
+          var tspanProps = {
+            key : gr.dataKey[idx],
+            fill : gr.colour[idx]
+          };
+          return (<tspan {...tspanProps}><tspan>{l}</tspan><tspan> </tspan></tspan>)
+        });
+      } else {
+        label = (<tspan key={gr.dataKey}>{gr.label}</tspan>);
+      }
+
+      var textProps = {
+        fill : gr.colour.push ? undefined : gr.colour,
+        x : range[0],
+        y : 20,
+        key : gr.dataKey
+      };
+
+      return (<text className="migration-column-label" {...textProps}>{label}</text>);
+    });
+
+    return (<g>
+      {toppers}
+      {labels}
+    </g>);
+  }
+}
+var MigrationColumnHeader = connectMap({
+
+})(MigrationColumnHeaderRaw);
+
 class BarFrame extends React.Component {
   static get defaultProps() {
     return {
@@ -245,12 +299,19 @@ class BarFrame extends React.Component {
       return (<AxisRaw {...axisProps} />);
     });
 
+    var headerProps = {
+      groups : this.props.groups
+    };
+
     var props = {
       data : this.props.data,
       groups : this.props.groups
     };
 
     return(<div>
+      <svg width="595" height="40">
+        <MigrationColumnHeader {...headerProps} />
+      </svg>
       <svg width="595" height={height}>
         {axes}
       </svg>
@@ -265,53 +326,43 @@ var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 295]);
 var relocScale = d3.scale.linear().domain([0,50000]).range([315, 435]);
 var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 575]);
 
-var relocAlts = {
-  'NONEU'  : (<text y="12" x="2" className="reloc-note" fill={colours.grey[5]}>Not an EU member</text>),
-  'SUPPLY' : (<text y="12" x="2" className="reloc-note" fill={colours.aquamarine[0]}>Supplying refugees</text>),
-  'EXEMPT' : (<text y="12" x="2" className="reloc-note" fill={colours.red[2]}>Exempt by treaty</text>)
-};
+var rawGroups = {
+  asylumFull : {
+    label: ['Total asylum decisions', 'of which positive'],
+    groupKey : 'asylum',
+    dataKey : ['total', 'positive'],
+    scale : fullScale,
+    colour : [colours.blue[3], colours.red[0]]
+  },
+  asylumPositive : {
+    label: 'Positive decisions',
+    groupKey : 'asylum',
+    dataKey : 'positive',
+    scale : positiveScale,
+    colour: colours.red[0]
+  },
+  reloc : {
+    label: 'Relocations',
+    dataKey : 'relocation',
+    scale : relocScale,
+    colour: colours.aquamarine[0],
+    alts : {
+      'NONEU'  : (<text y="12" x="2" className="reloc-note" fill={colours.grey[5]}>Not an EU member</text>),
+      'SUPPLY' : (<text y="12" x="2" className="reloc-note" fill={colours.aquamarine[0]}>Supplying refugees</text>),
+      'EXEMPT' : (<text y="12" x="2" className="reloc-note" fill={colours.red[2]}>Exempt by treaty</text>)
+    }
+  },
+  resettle : {
+    label: 'Resettlements',
+    dataKey : 'resettlement',
+    scale : resettleScale,
+    colour : colours.yellow[0]
+  }
+}
 var stepGroups = {
-  recog : [
-    {
-      groupKey : 'asylum',
-      dataKey : ['total', 'positive'],
-      scale : fullScale,
-      colour : [colours.blue[3], colours.red[0]]
-    }
-  ],
-  reloc : [
-    {
-      groupKey : 'asylum',
-      dataKey : 'positive',
-      scale : positiveScale,
-      colour: colours.red[0]
-    },
-    {
-      dataKey : 'relocation',
-      scale : relocScale,
-      colour: colours.aquamarine[0],
-      alts : relocAlts
-    }
-  ],
-  resettle : [
-    {
-      groupKey : 'asylum',
-      dataKey : 'positive',
-      scale : positiveScale,
-      colour: colours.red[0]
-    },
-    {
-      dataKey : 'relocation',
-      scale : relocScale,
-      colour: colours.aquamarine[0],
-      alts : relocAlts
-    },
-    {
-      dataKey : 'resettlement',
-      scale : resettleScale,
-      colour : colours.yellow[0]
-    }
-  ]
+  recog : [ rawGroups.asylumFull ],
+  reloc : [ rawGroups.asylumPositive, rawGroups.reloc ],
+  resettle : [ rawGroups.asylumPositive, rawGroups.reloc, rawGroups.resettle ]
 };
 
 class MigrationFSMRaw extends React.Component {

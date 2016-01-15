@@ -121,14 +121,16 @@ export function generateTranslateString(x, y, css) {
  *
  * @param {Number} x - origin x
  * @param {Number} y - origin y
- * @param {Number} width - width in pixels
- * @param {Number} height - height in pixels
+ * @param {Number} dx - width in pixels
+ * @param {Number} dy - height in pixels
+ * @param {Boolean} pointMode - determines if dx and dy are deltas or
+ *                            second x and y coordinates for the rect
  *
  * @return {String}   the polygon string for its `points` attr
  */
-export function generateRectPolygonString(x, y, width, height) {
-  var startX = x, finalX = x + width;
-  var startY = y, finalY = y + height;
+export function generateRectPolygonString(x, y, dx, dy, pointMode=false) {
+  var startX = x, finalX = dx + (pointMode ? 0 : x);
+  var startY = y, finalY = dy + (pointMode ? 0 : y);
   var points = [
     [startX, startY], [finalX, startY],
     [finalX, finalY], [startX, finalY]

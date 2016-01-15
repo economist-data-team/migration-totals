@@ -5,6 +5,14 @@ import { Im, mapToObject, generateTranslateString, generateRectPolygonString } f
 
 import colours from './econ_colours.js';
 
+class MigrationColumnLabels extends BoundedSVG {
+  static get defaultProps() {
+    return Im.extend(super.defaultProps, {
+
+    });
+  }
+}
+
 class BarLabels extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
