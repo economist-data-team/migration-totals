@@ -20,6 +20,8 @@ import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
 import TreemapRaw from './treemap.js';
+import ChartLegend from './legend.js';
+import SourceLabel from './source.js';
 import TooltipRaw from './tooltip.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
@@ -43,9 +45,11 @@ import updateState from './reducers.js'
 const DEBUGCREATESTORE = compose(
   window.devToolsExtension && window.devToolsExtension() || (f => f)
 )(createStore);
+
 var store = DEBUGCREATESTORE(updateState);
 window.store = store;
 
+// Time format function
 var columnChartMonthFormatter = d3.time.format('%B %Y');
 var applicantFormat = d3.format(',.0f');
 
@@ -53,10 +57,12 @@ var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
 
+// Call the treemap at once
 var Treemap = connectMap({
   data : 'sourceData'
 })(TreemapRaw);
 
+// Array of Step constructors
 var mousePosition = {x:0, y:0};
 var Tooltip = connect(function(state) {
   return {
@@ -77,7 +83,7 @@ var Tooltip = connect(function(state) {
 var steps = [
   new Step('apps', (<span>
     Asylum claims to European Union countries are at their highest
-    since records began. Around one-quarter of this year's applicants
+    since records began. Around one-quarter of this years applicants
     are Syrian. But Iraqis and Afghans fleeing war and poverty also
     account for a large share, as do largely economic migrants from
     Balkan countries like Kosovo and Albania. Around one-third of
@@ -104,6 +110,7 @@ var steps = [
   )
 ];
 
+// Time format function
 var dateFormatter = d3.time.format('%d/%m/%Y');
 
 function roundScaleMaximum(value, unit=1) {
@@ -112,6 +119,7 @@ function roundScaleMaximum(value, unit=1) {
   return Math.ceil((value + 0.5 * roundingPoint) / roundingPoint) * roundingPoint;
 }
 
+// React Component
 class ColumnFrame extends React.Component {
   static get defaultProps() {
     return {
@@ -120,6 +128,8 @@ class ColumnFrame extends React.Component {
       columnChartHighlight : null
     };
   }
+  
+  // Render function
   render() {
     var maximum = roundScaleMaximum(this.props.columnData.map(d => d.Total).reduce((memo, n) => Math.max(memo, n), 0));
     var columnChartProps = {
@@ -136,6 +146,7 @@ class ColumnFrame extends React.Component {
       xScale : this.props.columnScale,
       backgroundColour : '#E4EDF1' //colours.blue[6]
     };
+
     var columnAxisProps = {
       height : 300,
       margin : [260, 10, 10],
@@ -162,22 +173,25 @@ class ColumnFrame extends React.Component {
       verticalOffset : total < 50000 ? -30 : 0
     };
 
+    // Treemap object
     var treemapProps = {
       margin : [10, 10, 10, 130],
       height : 400,
       dataProcessor : data => {
-        return {
-          hideText : true,
-          children : [
-            // applicant numbers here are totally a hack
-            { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
-            { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
-            { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
-            { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
-          ]
-        };
-      },
-      valueFn : d => d.applicants,
+         return {
+           hideText : true,
+           children : [
+             // applicant numbers here are totally a hack
+             { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
+             { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
+             { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
+             { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
+           ]
+         };
+       },
+
+       valueFn : d => d.applicants,
+      // color fill funciton
       colourScale : d => {
         var rate = d.rate;
         if(rate === '#N/A') { return colours.grey[3]; }
@@ -188,6 +202,7 @@ class ColumnFrame extends React.Component {
         // background and errors, basically
         return 'white';
       },
+      // sort comparison function
       dataSort : (a,b) => a.applicants - b.applicants,
       valueFormat : applicantFormat,
       enterFn : d => {
@@ -201,20 +216,26 @@ class ColumnFrame extends React.Component {
       }
     }
 
+
     return(<div>
       <svg width="595" height="300">
         {chartRendered}
         <ColumnChartLabelRaw {...columnChartLabelProps} />
         <AxisRaw {...columnAxisProps} />
-        <ChartLabel text="Monthly asylum applications to Europe"/>
+        <ChartLabel text="Monthly asylum applications to Europe" />
       </svg>
       <svg width="595" height="400">
-        <ChartLabel text="Asylum applications to Europe" />
+        <ChartLabel text="Asylum applications to Europe" subtitle="June 2014 - June 2015" />
+        <ChartLegend {...treemapProps} />
         <Treemap {...treemapProps} />
       </svg>
-    </div>);
+      <svg width="595" height="50">
+        <SourceLabel text="Source: to come" />
+       </svg>
+    </div>)
   }
 }
+    
 
 class MigrationColumnHeaderRaw extends BoundedSVG {
   static get defaultProps() {
@@ -390,6 +411,7 @@ class MigrationFSMRaw extends React.Component {
 
     return (<BarFrame {...barProps} />);
   }
+
   render() {
     switch(this.props.step) {
       case 'apps':
@@ -427,10 +449,13 @@ class Chart extends ChartContainer {
     );
   }
 }
+
 var props = {
   height : 320
 };
 
+// Not sure where this fits on
+// React Chart render 
 var chart = React.render(
 <div>
   <Provider store={store}>
@@ -438,6 +463,8 @@ var chart = React.render(
   </Provider>
 </div>, document.getElementById('interactive'));
 
+
+//load in applications data from CSV file
 d3.csv('./data/applications.csv', function(error, data) {
   data = data.map(parseNumerics).map((d) => {
     d.month = dateFormatter.parse(d.month);
@@ -448,6 +475,7 @@ d3.csv('./data/applications.csv', function(error, data) {
   store.dispatch(updateAppsData(data));
 });
 
+//load in countries data from CSV file
 d3.csv('./data/countries.csv', function(error, data) {
   data = data.map(parseNumerics).map(d => {
     d.countryName = countries[d.iso3].name;
@@ -495,6 +523,7 @@ d3.csv('./data/countries.csv', function(error, data) {
   store.dispatch(updateCountryData(data));
 });
 
+//load in "incoming" data from CSV file
 d3.csv('./data/incoming.csv', function(error, data) {
   data = data.map(parseNumerics).map(d => {
     var iso3 = d.ISO3;
