@@ -7,17 +7,14 @@ export default class ChartLegend extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
       rectWidth : 15,
-      _width: 110,
       rectHeight : 15,
-      colors: ["#E30010", "#00857C", "#004C64", "#1A1719"],
-      _x: 20,
-      _y: 290,
-      _yHeader: 285,
       gap: 20,
       fontSize : 14,
-      index: [1, 2, 3, 4],
-      textLabel: [">75%", "50-75%", "10-50%", "<10%"],
-      legendLabel: "The label"
+      legendLabel : "The label",
+      legendItems : [
+        { colour : 'red', label : 'One' },
+        { colour : 'blue', label : 'Two' }
+      ]
     });
   }
 
