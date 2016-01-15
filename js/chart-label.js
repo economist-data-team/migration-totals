@@ -8,7 +8,7 @@ export default class ChartLabel extends BoundedSVG {
       fontSize : 14,
       width : 110,
       text : 'Chart label',
-      subtitle: 'June 2014 - June 2015'
+      subtitle: ''
     });
   }
   get textElements() {

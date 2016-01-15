@@ -17,6 +17,8 @@ import BoundedSVG from './bounded-svg.js';
 import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
 import TreemapRaw from './treemap.js';
+import ChartLegend from './legend.js';
+import SourceLabel from './source.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
@@ -180,12 +182,16 @@ class ColumnFrame extends React.Component {
         {chartRendered}
         <ColumnChartLabelRaw {...columnChartLabelProps} />
         <AxisRaw {...columnAxisProps} />
-        <ChartLabel text="Monthly asylum applications to Europe"/>
+        <ChartLabel text="Monthly asylum applications to Europe" />
       </svg>
       <svg width="595" height="400">
-        <ChartLabel text="Asylum applications to Europe" />
+        <ChartLabel text="Asylum applications to Europe" subtitle="June 2014 - June 2015" />
+        <ChartLegend {...treemapProps} />
         <Treemap {...treemapProps} />
       </svg>
+      <svg width="595" height="50">
+        <SourceLabel text="Source: to come" />
+        </svg>
     </div>)
   }
 }
