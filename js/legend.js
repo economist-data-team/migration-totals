@@ -4,31 +4,27 @@ import { Im, generateTranslateString } from './utilities.js';
 import colours from './econ_colours.js';
 
 export default class ChartLegend extends BoundedSVG {
-	static get defaultProps() {
-	   	return Im.extend(super.defaultProps, {
-		   		rectWidth : 15,
-		   		_width: 110,
-		   		rectHeight : 15,
-		   		colors: ["#E30010", "#00857C", "#004C64", "#1A1719"],
-		   		_x: 20,
-		   		_y: 290,
-		   		_yHeader: 285,
-		   		gap: 20,
-		   		fontSize : 14,
-		   		index: [1, 2, 3, 4],
-		   		textLabel: [">75%", "50-75%", "10-50%", "<10%"],
-		   		legendLabel: "Acceptance Rate",
-		   		source: "to come"
-	   	      }
-	   	   );
-	   }
+  static get defaultProps() {
+    return Im.extend(super.defaultProps, {
+      rectWidth : 15,
+      _width: 110,
+      rectHeight : 15,
+      colors: ["#E30010", "#00857C", "#004C64", "#1A1719"],
+      _x: 20,
+      _y: 290,
+      _yHeader: 285,
+      gap: 20,
+      fontSize : 14,
+      index: [1, 2, 3, 4],
+      textLabel: [">75%", "50-75%", "10-50%", "<10%"],
+      legendLabel: "The label"
+    });
+  }
 
   get legendheader() {
-
     var characters = this.props.width * 2 / this.props.fontSize;
     var words = this.props.legendLabel.split(' ');
     var texts = [];
-
 
     while(words.join(' ').length > characters) {
       let nextLine = [];
@@ -44,32 +40,37 @@ export default class ChartLegend extends BoundedSVG {
     texts.push(words);
 
    return texts.map((line, idx) => {
-    return (<text className="label-group" x={this.props._x} y={(idx + 1) * (this.props.fontSize * 1.2) + this.props._yHeader} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
+    return (<text className="label-group" x={this.leftBound} y={(idx + 1) * (this.props.fontSize * 1.2) + this.topBound} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
        });
   }
 
+  render() {
+    var items = this.props.legendItems.map((d, idx) => {
+      var transform = generateTranslateString(0, this.topBound + (idx + 1) * this.props.gap + 5);
 
-	 get legend() {
-	  	var labels = this.props.textLabel;
+      var rectProps = {
+        x : this.leftBound,
+        // y : this.topBound + (idx + 1) * this.props.gap,
+        width : this.props.rectWidth,
+        height : this.props.rectHeight,
+        fill : d.colour
+      };
+      var textProps = {
+        x : this.leftBound + this.props.rectWidth + 5,
+        y : this.props.fontSize * 0.85,
+        fontSize : this.props.fontSize
+      };
 
-	  	return labels.map((label, idx) => {
-	  		return (<text fontSize={this.props.fontSize} className="label-group-legend" 
-	  			x={this.props._x + this.props.rectWidth + 10} 
-	  			y={this.props._y + this.props.index[idx] * this.props.gap + 12}>{labels[idx]}</text>);  
-	  	});
-	  }
-   
+      return (<g transform={transform}>
+        <rect {...rectProps}></rect>
+        <text {...textProps}>{d.label}</text>
+      </g>);
+    });
 
-	render() {
-	    return(<g>
-	    	{this.legend}
-	    	{this.legendheader}
-	    	   <rect x={this.props._x} y={this.props._y + this.props.index[0] * this.props.gap} width={this.props.rectWidth} height={this.props.rectHeight} fill={colours.red[1]} ></rect>
-			   <rect x={this.props._x} y={this.props._y + this.props.index[1] * this.props.gap} width={this.props.rectWidth} height={this.props.rectHeight} fill={colours.yellow[0]} ></rect>
-			   <rect x={this.props._x} y={this.props._y + this.props.index[2] * this.props.gap} width={this.props.rectWidth} height={this.props.rectHeight} fill={colours.blue[3]}></rect>
-			   <rect x={this.props._x} y={this.props._y + this.props.index[3] * this.props.gap} width={this.props.rectWidth} height={this.props.rectHeight} fill={colours.blue[4]} ></rect>
-		   </g>
-	    )
-	  }
+    return(<g>
+      {this.legendheader}
+      {items}
+     </g>
+    )
+  }
 }
-

@@ -2,6 +2,24 @@ import React from 'react';
 import BoundedSVG from './bounded-svg.js';
 import { Im, generateTranslateString } from './utilities.js';
 
+function textFunc(_words, characters) {
+  var _texts = [];
+
+  while(_words.join(' ').length > characters) {
+    let nextLine = [];
+    while(nextLine.join(' ').length < characters) {
+      nextLine.push(_words.shift());
+    }
+    if(nextLine.join(' ').length > characters) {
+      _words.unshift(nextLine.pop());
+    }
+    _texts.push(nextLine);
+  }
+
+  _texts.push(_words);
+  return _texts;
+}
+
 export default class ChartLabel extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
@@ -17,36 +35,14 @@ export default class ChartLabel extends BoundedSVG {
     var words = this.props.text.split(' ');
     var wordssub = this.props.subtitle.split(' ');
 
-    function textFunc(_words) {
+    var texts = textFunc(words, characters);
+    var subtitles = textFunc(wordssub, characters);
 
-      var _texts = [];
-
-         while(_words.join(' ').length > characters) {
-              let nextLine = [];
-               while(nextLine.join(' ').length < characters) {
-               nextLine.push(_words.shift());
-              }
-              if(nextLine.join(' ').length > characters) {
-                _words.unshift(nextLine.pop());
-              }
-              _texts.push(nextLine);
-          }
-
-         _texts.push(_words);
-         return _texts;
-    }
-
-    var texts = textFunc(words);
-    var subtitles = textFunc(wordssub);
-
-
-
-        return texts.map((line, idx) => {
-          return (<text x="5" y={(idx + 1) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
-        }).concat(subtitles.map((line, idx) => {
-          return (<text x="5" className="label-group-subtitle" y={(idx + (texts.length + 1)) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>)
-        }));
-
+    return texts.map((line, idx) => {
+      return (<text x="5" y={(idx + 1) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
+    }).concat(subtitles.map((line, idx) => {
+      return (<text x="5" className="label-group-subtitle" y={(idx + (texts.length + 1)) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>)
+    }));
   }
 
   render() {

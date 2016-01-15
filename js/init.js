@@ -83,7 +83,7 @@ var Tooltip = connect(function(state) {
 var steps = [
   new Step('apps', (<span>
     Asylum claims to European Union countries are at their highest
-    since records began. Around one-quarter of this years applicants
+    since records began. Around one-quarter of this year’s applicants
     are Syrian. But Iraqis and Afghans fleeing war and poverty also
     account for a large share, as do largely economic migrants from
     Balkan countries like Kosovo and Albania. Around one-third of
@@ -128,7 +128,7 @@ class ColumnFrame extends React.Component {
       columnChartHighlight : null
     };
   }
-  
+
   // Render function
   render() {
     var maximum = roundScaleMaximum(this.props.columnData.map(d => d.Total).reduce((memo, n) => Math.max(memo, n), 0));
@@ -178,19 +178,18 @@ class ColumnFrame extends React.Component {
       margin : [10, 10, 10, 130],
       height : 400,
       dataProcessor : data => {
-         return {
-           hideText : true,
-           children : [
-             // applicant numbers here are totally a hack
-             { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
-             { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
-             { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
-             { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
-           ]
-         };
-       },
-
-       valueFn : d => d.applicants,
+        return {
+          hideText : true,
+          children : [
+            // applicant numbers here are totally a hack
+            { hideText : true, children : Im.filter(data, d => d.rate > 75), applicants : 40 },
+            { hideText : true, children : Im.filter(data, d => d.rate > 50 && d.rate <= 75), applicants : 30 },
+            { hideText : true, children : Im.filter(data, d => d.rate > 10 && d.rate <= 50), applicants : 20 },
+            { hideText : true, children : Im.filter(data, d => d.rate <= 10), applicants : 10 },
+          ]
+        };
+      },
+      valueFn : d => d.applicants,
       // color fill funciton
       colourScale : d => {
         var rate = d.rate;
@@ -214,8 +213,19 @@ class ColumnFrame extends React.Component {
       leaveFn : d => {
         store.dispatch(hideTooltip());
       }
-    }
+    };
 
+    var legendProps = {
+      margin : [290, 10, 10, 20],
+      height : 400,
+      legendLabel : 'Acceptance Rate',
+      legendItems : [
+        { colour : colours.red[1], label : 'over 75%' },
+        { colour : colours.blue[3], label : '50-75%' },
+        { colour : colours.blue[4], label : '10-50%' },
+        { colour : colours.yellow[0], label : '10% or less' }
+      ]
+    };
 
     return(<div>
       <svg width="595" height="300">
@@ -225,8 +235,8 @@ class ColumnFrame extends React.Component {
         <ChartLabel text="Monthly asylum applications to Europe" />
       </svg>
       <svg width="595" height="400">
-        <ChartLabel text="Asylum applications to Europe" subtitle="June 2014 - June 2015" />
-        <ChartLegend {...treemapProps} />
+        <ChartLabel text="Asylum applications to Europe" subtitle="October 2014 - October 2015" />
+        <ChartLegend {...legendProps} />
         <Treemap {...treemapProps} />
       </svg>
       <svg width="595" height="50">
@@ -235,7 +245,7 @@ class ColumnFrame extends React.Component {
     </div>)
   }
 }
-    
+
 
 class MigrationColumnHeaderRaw extends BoundedSVG {
   static get defaultProps() {
@@ -455,7 +465,7 @@ var props = {
 };
 
 // Not sure where this fits on
-// React Chart render 
+// React Chart render
 var chart = React.render(
 <div>
   <Provider store={store}>
