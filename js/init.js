@@ -2,6 +2,7 @@
 
 import d3 from 'd3';
 import React from 'react';
+import Imm from 'immutable';
 import { Im, parseNumerics, connectMap, generateTranslateString,
   generateRectPolygonString, commaNumber, isNumeric, addDOMProperty }
   from './utilities.js';
@@ -23,6 +24,7 @@ import TreemapRaw from './treemap.js';
 import ChartLegend from './legend.js';
 import SourceLabel from './source.js';
 import TooltipRaw from './tooltip.js';
+import SankeyRaw from './sankey.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
@@ -35,6 +37,7 @@ import { connect, Provider } from 'react-redux';
 import {
   updateSourceData, updateCountryData,
   updateAppsData, updateStepperValue,
+  updateSankeyData,
   updateColumnChartHighlight,
   clearColumnChartHighlight,
   showTooltip, hideTooltip
@@ -61,6 +64,10 @@ var Stepper = connectMap({
 var Treemap = connectMap({
   data : 'sourceData'
 })(TreemapRaw);
+
+var Sankey = connectMap({
+  data : 'sankeyData'
+})(SankeyRaw);
 
 // Array of Step constructors
 var mousePosition = {x:0, y:0};
@@ -89,6 +96,7 @@ var steps = [
     Balkan countries like Kosovo and Albania. Around one-third of
     claims this year have been made in Germany.</span>), '1'
   ),
+  new Step('sankey', <span>Sankey sankey sankey</span>, 'S'),
   new Step('recog', (<span>
     But not all of these asylum seekers will make it in. Recognition rates vary from country
     to country.</span>), '2'
@@ -421,11 +429,29 @@ class MigrationFSMRaw extends React.Component {
 
     return (<BarFrame {...barProps} />);
   }
+  get sankeyStep() {
+    var sankeyProps = {
+      width : 575,
+      axes : [
+        { name : 'Origin', unit : '' },
+        { name : 'Destination', unit : '' },
+        { name : 'Total decisions†', unit : '', side : 'right' },
+        { name : 'Decisions by origin', unit : '% accepted', side : 'right' }
+      ],
+      height : 500,
+      nodeWidth : 20
+    };
+    return (
+      <Sankey {...sankeyProps} />
+    );
+  }
 
   render() {
     switch(this.props.step) {
       case 'apps':
         return this.columnStep;
+      case 'sankey':
+        return this.sankeyStep;
       case 'recog':
       case 'reloc':
       case 'resettle':
@@ -543,4 +569,98 @@ d3.csv('./data/incoming.csv', function(error, data) {
     return d;
   });
   store.dispatch(updateSourceData(data));
+});
+
+
+
+function collateValues(memo, d) {
+  return memo + +d.values;
+}
+var decisionNames = {
+  positive : 'accepted',
+  rejected : 'rejected'
+};
+d3.csv('./data/sankey.csv', function(error, data) {
+  // once we get the data in, there's a ton of recalculating and parsing
+  // to be done on it. We do all that here.
+  data = Imm.List(data).map((d) => {
+    d.decision = decisionNames[d.decision];
+    return d;
+  });
+  var origins = Imm.Set(data.map(m => m.from)).map(m => ({
+    name : m, type : 'o',
+    allValues : data.filter(d => d.from === m),
+    total : data.filter(d => d.from === m).reduce(collateValues, 0)
+  }));
+  var destinations = Imm.Set(data.map(m => m.to)).map(m => ({
+    name : m, type : 'd',
+    allValues : data.filter(d => d.to === m),
+    total : data.filter(d => d.to === m).reduce(collateValues, 0)
+  }));
+  var decisions = Imm.Set(data.map(m => m.decision)).map(m => ({
+    name : m, type : 'dc',
+    total : data.filter(d => d.decision === m).reduce(collateValues, 0)
+  }));
+  var originDecisions = decisions.reduce((memo, dc) => {
+    return memo.union(origins.map(o => ({
+      name : `${o.name}-${dc.name}`, type : 'odc', o : o, dc : dc,
+      countryTotal : o.total,
+      total : data.filter(d => d.decision === dc.name && d.from === o.name).reduce(collateValues, 0)
+    })));
+  }, Imm.Set());
+  var origins2 = origins.map(
+    d => Imm.Map(d).set('name', `${d.name}-2`)
+                  .set('type', 'o-2')
+                  .set('odcY', originDecisions.find(odc => odc.o === d && odc.dc.name === 'accepted'))
+                  .set('odcN', originDecisions.find(odc => odc.o === d && odc.dc.name === 'rejected'))
+                  .set('o', origins.find(o => d.name === o.name))
+                  .toJS()
+  ).sort((a, b) => { return a.odcY.total - b.odcY.total; });
+  origins = origins.map((o) => {
+    o.o_2 = origins2.find(o_2 => o_2.name === `${o.name}-2`);
+    return o;
+  });
+
+  var ordering = ['o', 'd', 'dc', 'o-2'];
+  var nodes = origins.union(destinations).union(decisions).union(origins2).sort((a, b) => {
+    return ordering.indexOf(b.type) - ordering.indexOf(a.type) ||
+      (b.type === 'o-2' ? (b.odcY.total / (b.odcY.total + b.odcN.total)) : b.total) -
+      (a.type === 'o-2' ? (a.odcY.total / (a.odcY.total + a.odcN.total)) : a.total);
+  });
+  function findNode(m) {
+    return nodes.find(n => n.name === m.name);
+  }
+
+  function getValue(origin, destination, decision) {
+    var n = data.find(line => (line.from === origin.name && line.to === destination.name && line.decision === decision.name));
+    return +n.values;
+  }
+  var links = Imm.OrderedSet();
+  var o_d = origins.reduce((memo, o) => {
+    return memo.union(destinations.reduce((memo, d) => {
+      var value = decisions.reduce((memo, dc) => {
+        return memo + getValue(o, d, dc);
+      }, 0);
+      return memo.add({type: 'o_d', source : findNode(o), target : findNode(d), value : value });
+    }, Imm.Set()));
+  }, Imm.Set());
+
+  var d_dc = destinations.reduce((memo, d) => {
+    return memo.union(decisions.reduce((memo, dc) => {
+      return memo.add({ type : 'd_dc', source : findNode(d), target : findNode(dc), value : origins.reduce((memo, o) => {
+        return memo + getValue(o, d, dc);
+      }, 0)});
+    }, Imm.Set()));
+  }, Imm.Set());
+
+  var dc_odc = originDecisions.reduce((memo, odc) => {
+    var o2 = { name : `${odc.o.name}-2` };
+    return memo.add({ type : 'dc_odc', source : findNode(odc.dc), target : findNode(o2), value : destinations.reduce((memo, d) => {
+      return memo + getValue(odc.o, d, odc.dc);
+    }, 0)});
+  }, Imm.OrderedSet());
+
+  links = links.union(o_d).union(d_dc).union(dc_odc);
+
+  store.dispatch(updateSankeyData({ links : links.toJS(), nodes : nodes.toJS() }));
 });

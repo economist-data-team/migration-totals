@@ -68,3 +68,149 @@
   font-weight: bold;
   font-size: 14px;
 }
+
+
+/*Sankey*/
+:root {
+  --origin: #2b87a6;
+  --destination: #fba74a;
+  --yes: #4aa4a1;
+  --no: #f15a40;
+  --diminished: var(--grey-8);
+}
+
+.sankey-container {
+  .link {
+    fill: none;
+    stroke: var(--grey-5);
+
+    &[data-type=o_d] {
+      stroke: color(var(--origin) alpha(30%));
+    }
+    &[data-type=d_dc] {
+      stroke: color(var(--destination) alpha(30%));
+    }
+    &[data-type=dc_odc] {
+      &[data-source=accepted] {
+        stroke: color(var(--yes) alpha(30%));
+      }
+      &[data-source=rejected] {
+        stroke: color(var(--no) alpha(30%));
+      }
+    }
+
+    &[data-diminish=true],
+    &[data-diminish=true][data-source] {
+      stroke: color(var(--diminished) alpha(20%));
+    }
+  }
+
+  .axis-line {
+    stroke : black;
+    stroke-dasharray: 2 2;
+  }
+
+  .label {
+    text {
+      font-size: 12px;
+    }
+    .label-name {
+      font-weight: bold;
+    }
+
+    .label-unit {
+      fill: var(--grey-3);
+      font-style: italic;
+    }
+  }
+
+  .node {
+    cursor: pointer;
+
+    text {
+      user-select: none;
+    }
+    .node-label {
+      font-size: 13px;
+    }
+    .node-value {
+      font-size : 12px;
+      font-style : italic;
+      font-weight: normal;
+      fill : var(--grey-3);
+    }
+
+    rect {
+      fill: rgba(50,50,50,0.4);
+      stroke: white;
+      stroke-width: 0.5;
+    }
+
+    /*origin nodes*/
+    &[data-type=o] {
+      rect {
+        fill : var(--origin);
+      }
+    }
+
+    /*destination nodes*/
+    &[data-type=d] {
+      rect {
+        fill : var(--destination);
+      }
+    }
+
+    /*decision nodes*/
+    &[data-type=dc] {
+      text {
+        fill : white;
+      }
+
+      &[data-name=accepted] {
+        rect {
+          fill : var(--yes);
+        }
+      }
+
+      &[data-name=rejected] {
+        rect {
+          fill : var(--no);
+        }
+      }
+    }
+
+    /*decision-by-origin nodes*/
+    &[data-type=o-2] {
+      rect[data-decision="accepted"] {
+        fill : var(--yes);
+      }
+
+      rect[data-decision="rejected"] {
+        fill : var(--no);
+      }
+
+      .node-label {
+        text-anchor: end;
+      }
+      .node-value {
+        text-anchor: end;
+        fill : var(--yes);
+
+        &[data-no=true] {
+          fill : var(--no);
+        }
+      }
+    }
+
+    &[data-diminish=true][data-type] {
+      rect,
+      rect[data-decision] {
+        fill : var(--grey-9);
+      }
+
+      .node-label, .node-value {
+        fill : var(--grey-7);
+      }
+    }
+  }
+}
