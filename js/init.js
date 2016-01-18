@@ -376,7 +376,7 @@ var rawGroups = {
     colour: colours.red[0]
   },
   reloc : {
-    label: 'Relocations',
+    label: 'Alloted relocations',
     dataKey : 'relocation',
     scale : relocScale,
     colour: colours.aquamarine[0],
