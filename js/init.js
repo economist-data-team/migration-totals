@@ -438,12 +438,13 @@ class MigrationFSMRaw extends React.Component {
         { name : 'Total decisions†', unit : '', side : 'right' },
         { name : 'Decisions by origin', unit : '% accepted', side : 'right' }
       ],
-      height : 500,
+      height : 400,
       nodeWidth : 20
     };
-    return (
+    return (<div>
       <Sankey {...sankeyProps} />
-    );
+      <img src="./images/20150829_EUM981.png" width="595"/>
+    </div>);
   }
 
   render() {
