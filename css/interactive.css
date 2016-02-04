@@ -219,6 +219,13 @@
 .migrant-euromap {
   margin: 10px;
 
+  .region-graph-note, .region-graph-datapoint {
+    font-style: italic;
+  }
+  .region-graph-label {
+    font-weight: bold;
+  }
+
   .circle-title {
     font-weight: bold;
     font-size: 7.5px;

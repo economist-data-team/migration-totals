@@ -4,6 +4,7 @@ import BoundedSVG from './bounded-svg.js';
 import { generateTranslateString } from './utilities.js';
 
 var numberFormat = d3.format(',');
+var lineScale = d3.scale.linear().domain([0,100]).range([0,75]);
 
 export default class MigrantRoutesMap extends React.Component {
   static get defaultProps() {
@@ -75,6 +76,141 @@ export default class MigrantRoutesMap extends React.Component {
       </text>
     </g>);
   }
+
+  get balkanGraph() {
+    var colour = "#00526D";
+    var graphData = this.props.data.find(d => d.loc === 'w_balk');
+    if(!graphData) { return null; }
+    return(<g className="region-graph">
+      <polygon fill={colour} points="193,145.5 203.9,145.5 219.2,145.5 219.2,149.5 219.2,153.5 203.9,153.5 193,153.5 190,149.5"/>
+
+      <g transform="translate(219,82)">
+        <line fill="none" stroke={colour} strokeWidth="0.3" strokeMiterlimit="10" y2="67.5"/>
+
+        <text x="1.3" y="4" className="region-graph-note">
+          <tspan x="1.3" dy="0" fill={colour} fontSize="6">Mainly secondary</tspan>
+          <tspan x="1.3" dy="6.5" fill={colour} fontSize="6">EU entrants</tspan>
+          <tspan x="1.3" dy="6.5" fill={colour} fontSize="6">(via Greece)</tspan>
+        </text>
+
+        <text x="1.3" y="24.5" fontSize="6.5" className="region-graph-label">From:</text>
+        <text x="1.3" y="31.5" fontSize="6.5">
+          <tspan>{graphData.country_1 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_1_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="34.2" fill={colour} width={lineScale(graphData.country_1_pct)} height="2"/>
+        <text x="1.3" y="44.5" fontSize="6.5">
+          <tspan>{graphData.country_2 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_2_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="46.4" fill={colour} width={lineScale(graphData.country_2_pct)} height="2"/>
+        <text x="1.3" y="57.5" fontSize="6.5">
+          <tspan>{graphData.country_3 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_3_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="59.1" fill={colour} width={lineScale(graphData.country_3_pct)} height="2"/>
+      </g>
+    </g>);
+  }
+  get eMedGraph() {
+    var colour = '#00A4DB';
+    var graphData = this.props.data.find(d => d.loc === 'e_med');
+    if(!graphData) { return null; }
+    return(<g className="region-graph">
+      <polygon fill={colour} points="230.4,193.6 241.3,193.6 252.2,193.6 252.2,197.6 252.2,201.6 241.3,201.6 230.4,201.6
+        227.4,197.6"/>
+
+      <g transform="translate(252.1,194.5)">
+        <line fill="none" stroke={colour} strokeWidth="0.3" strokeMiterlimit="10" y2="43.4"/>
+
+        <text x="1.3" y="7" fontSize="6.5" className="region-graph-label">From:</text>
+
+        <text x="1.3" y="14" fontSize="6.5">
+          <tspan>{graphData.country_1 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_1_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="17" fill={colour} width={lineScale(graphData.country_1_pct)} height="2"/>
+
+        <text x="1.3" y="26.2" fontSize="6.5">
+          <tspan>{graphData.country_2 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_2_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="29.2" fill={colour} width={lineScale(graphData.country_2_pct)} height="2"/>
+
+        <text x="1.3" y="38.4" fontSize="6.5">
+          <tspan>{graphData.country_3 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_3_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="41.4" fill={colour} width={lineScale(graphData.country_3_pct)} height="2"/>
+      </g>
+    </g>);
+  }
+  get cMedGraph() {
+    var colour = "#ED1C24";
+    var graphData = this.props.data.find(d => d.loc === 'c_med');
+    if(!graphData) { return null; }
+    return(<g className="region-graph">
+      <polygon fill={colour} points="190.8,208.2 201.7,208.2 207.5,208.2 207.5,212.2 207.5,216.2 201.7,216.2 190.8,216.2 187.8,212.2"/>
+
+      <g transform="translate(207.3,208)">
+        <line fill="none" stroke={colour} strokeWidth="0.3" strokeMiterlimit="10" y2="43.4"/>
+
+        <text x="1.3" y="7" fontSize="6.5" className="region-graph-label">From:</text>
+
+        <text x="1.3" y="14" fontSize="6.5">
+          <tspan>{graphData.country_1 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_1_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="17" fill={colour} width={lineScale(graphData.country_1_pct)} height="2"/>
+
+        <text x="1.3" y="26.2" fontSize="6.5">
+          <tspan>{graphData.country_2 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_2_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="29.2" fill={colour} width={lineScale(graphData.country_2_pct)} height="2"/>
+
+        <text x="1.3" y="38.4" fontSize="6.5">
+          <tspan>{graphData.country_3 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_3_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="41.4" fill={colour} width={lineScale(graphData.country_3_pct)} height="2"/>
+      </g>
+    </g>);
+  }
+  get wMedGraph() {
+    var colour = "#F7941E";
+    var graphData = this.props.data.find(d => d.loc === 'w_med');
+    if(!graphData) { return null; }
+    return(<g className="region-graph">
+      <polygon fill={colour} points="50.2,198.5 61.1,198.5 67.4,198.5 67.4,202.5 67.4,206.5 61.1,206.5 50.2,206.5 47.2,202.5"/>
+
+      <g transform="translate(67,199.6)">
+        <line fill="none" stroke={colour} strokeWidth="0.3" strokeMiterlimit="10" y2="43.4"/>
+
+        <text x="1.3" y="7" fontSize="6.5" className="region-graph-label">From:</text>
+
+        <text x="1.3" y="14" fontSize="6.5">
+          <tspan>{graphData.country_1 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_1_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="17" fill={colour} width={lineScale(graphData.country_1_pct)} height="2"/>
+
+        <text x="1.3" y="26.2" fontSize="6.5">
+          <tspan>{graphData.country_2 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_2_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="29.2" fill={colour} width={lineScale(graphData.country_2_pct)} height="2"/>
+
+        <text x="1.3" y="38.4" fontSize="6.5">
+          <tspan>{graphData.country_3 + ' '}</tspan>
+          <tspan className='region-graph-datapoint'>{graphData.country_3_pct + '%'}</tspan>
+        </text>
+        <rect x="0" y="41.4" fill={colour} width={lineScale(graphData.country_3_pct)} height="2"/>
+      </g>
+    </g>);
+  }
+
+
   render() {
     return (<svg width="575" height="442" viewBox="0 0 332 255" className="migrant-euromap">
       <g id="BKGD">
@@ -760,9 +896,7 @@ export default class MigrantRoutesMap extends React.Component {
             <g>
               <path fill="none" stroke="#00526D" strokeWidth="2" strokeMiterlimit="10" d="M186.9,175.7c0,0,4.2-17.1-3.2-24.2
                 c-5.7-5.6-9.7-7.7-11.8-11.3"/>
-              <g>
-                <polygon fill="#00526D" points="169.4,141.8 174.9,139.2 170.8,137.8"/>
-              </g>
+              <polygon fill="#00526D" points="169.4,141.8 174.9,139.2 170.8,137.8"/>
             </g>
           </g>
           <g>
@@ -777,7 +911,7 @@ export default class MigrantRoutesMap extends React.Component {
         <g className="country-names">
           <text transform="matrix(1 0 0 1 170.3014 192.0467)" fill="#58595B" fontSize="6">Greece</text>
           <text transform="matrix(1 0 0 1 155.0112 172.6556)" fill="#58595B" fontSize="6">ALBANIA</text>
-          <text transform="matrix(1 0 0 1 236.9049 177.7681)" fill="#58595B" fontSize="6">Turkey</text>
+          <text transform="matrix(1 0 0 1 230.9049 177.7681)" fill="#58595B" fontSize="6">Turkey</text>
           <text transform="matrix(1 0 0 1 186.1933 140.3115)" fill="#58595B" fontSize="6">ROMANIA</text>
           <text transform="matrix(1 0 0 1 180.8101 25.535)" fill="#58595B" fontSize="6">Finland</text>
           <text transform="matrix(1 0 0 1 219.8082 52.7061)" fill="#58595B" fontSize="6">RUSSIA</text>
@@ -802,7 +936,7 @@ export default class MigrantRoutesMap extends React.Component {
           <text transform="matrix(1 0 0 1 164.8659 119.808)" fill="#58595B" fontSize="6">SLOVAKIA</text>
           <text transform="matrix(1 0 0 1 194.1717 161.7561)" fill="#58595B" fontSize="6">BULGARIA</text>
           <text transform="matrix(1 0 0 1 144.4733 163.2238)" fill="#58595B" fontSize="6">MACEDONIA</text>
-          <text transform="matrix(1 0 0 1 162.0696 154.0645)" fill="#58595B" fontSize="6">SERBIA</text>
+          <text transform="matrix(1 0 0 1 161.0696 154.0645)" fill="#58595B" fontSize="6">SERBIA</text>
           <text transform="matrix(1 0 0 1 133.7195 127.4999)" fill="#58595B" fontSize="6">Austria</text>
           <text transform="matrix(1 0 0 1 40.6628 165.5001)" fill="#58595B" fontSize="6">Spain</text>
         </g>
@@ -847,60 +981,10 @@ export default class MigrantRoutesMap extends React.Component {
         {this.wMedCircle}
       </g>
       <g id="From">
-        <g>
-          <text transform="matrix(1 0 0 1 253.6592 201.5699)"><tspan x="0" y="0" fontSize="6.5">From:</tspan><tspan x="15.4" y="0" fontSize="6.5" letter-spacing="21">  </tspan><tspan x="0" y="7" fontSize="6.5">Syria </tspan><tspan x="14.3" y="7" fontSize="6.5">56%</tspan><tspan x="0" y="20" fontSize="6.5">Afghanistan </tspan><tspan x="33.1" y="20" fontSize="6.5">24%</tspan><tspan x="0" y="33" fontSize="6.5">Pakistan </tspan><tspan x="23.8" y="33" fontSize="6.5">11%</tspan></text>
-        </g>
-        <g>
-          <rect x="252.1" y="211.8" fill="#00A4DB" width="42.1" height="2"/>
-          <g>
-            <rect x="252.1" y="224.1" fill="#00A4DB" width="18.1" height="2"/>
-            <rect x="252.1" y="236.3" fill="#00A4DB" width="7.9" height="2"/>
-          </g>
-        </g>
-        <g>
-          <text transform="matrix(1 0 0 1 220.147 106.5177)" fontSize="6.5">From:</text>
-          <text transform="matrix(1 0 0 1 235.5581 106.5177)" fontSize="7" letter-spacing="21">  </text>
-          <text transform="matrix(1 0 0 1 220.147 113.5177)" fontSize="6.5">Not specified</text>
-          <text transform="matrix(1 0 0 1 254.2837 113.5177)" fontSize="6.5"> 73%</text>
-          <text transform="matrix(1 0 0 1 220.147 126.5177)" fontSize="6.5">Syria </text>
-          <text transform="matrix(1 0 0 1 234.4663 126.5177)" fontSize="6.5">12%</text>
-          <text transform="matrix(1 0 0 1 220.147 139.5177)" fontSize="6.5">Afghanistan </text>
-          <text transform="matrix(1 0 0 1 253.2242 139.5177)" fontSize="6.5">7%</text>
-        </g>
-        <g>
-          <rect x="219" y="116.2" fill="#00526D" width="54.6" height="2"/>
-          <rect x="219" y="128.4" fill="#00526D" width="8.9" height="2"/>
-          <rect x="219" y="141.1" fill="#00526D" width="5.2" height="2"/>
-        </g>
-        <line fill="none" stroke="#00526D" strokeWidth="0.3" strokeMiterlimit="10" x1="219" y1="82.1" x2="219" y2="149.5"/>
-        <line fill="none" stroke="#00A4DB" strokeWidth="0.3037" strokeMiterlimit="10" x1="252.1" y1="197" x2="252.1" y2="238.3"/>
-        <g>
-          <text transform="matrix(1 0 0 1 209.1943 216.2173)"><tspan x="0" y="0" fontSize="6.5">From:</tspan><tspan x="15.4" y="0" fontSize="6.5" letter-spacing="21">  </tspan><tspan x="0" y="7" fontSize="6.5">Eritrea </tspan><tspan x="19" y="7" fontSize="6.5">25%</tspan><tspan x="0" y="20" fontSize="6.5">Nigeria</tspan><tspan x="19" y="20" fontSize="6.5"> 14%</tspan><tspan x="0" y="33" fontSize="6.5">Somalia</tspan><tspan x="20.8" y="33" fontSize="6.5"> 8%</tspan></text>
-        </g>
-        <rect x="207.3" y="225.2" fill="#ED1C24" width="18.9" height="2"/>
-        <rect x="207.3" y="238.4" fill="#ED1C24" width="10.6" height="2"/>
-        <rect x="207.3" y="250.9" fill="#ED1C24" width="6.1" height="2"/>
-        <line fill="none" stroke="#ED1C24" strokeWidth="0.3" strokeMiterlimit="10" x1="207.3" y1="212.6" x2="207.3" y2="252.9"/>
-        <g>
-          <text transform="matrix(1 0 0 1 220.3289 86.0976)"><tspan x="0" y="0" fill="#00526D" fontSize="6">Mainly secondary  </tspan><tspan x="0" y="6.5" fill="#00526D" fontSize="6">EU entrants</tspan><tspan x="0" y="13" fill="#00526D" fontSize="6">(via Greece)</tspan></text>
-        </g>
-        <g>
-          <text transform="matrix(1 0 0 1 68.9983 206.5015)"><tspan x="0" y="0" fontSize="6.5">From:</tspan><tspan x="15.4" y="0" fontSize="6.5" letter-spacing="21">  </tspan><tspan x="0" y="7" fontSize="6.5">Guinea</tspan><tspan x="18.2" y="7" fontSize="6.5"> 28%</tspan><tspan x="0" y="20" fontSize="6.5">Algeria </tspan><tspan x="19.9" y="20" fontSize="6.5">15%</tspan><tspan x="0" y="33" fontSize="6.5">Morocco</tspan><tspan x="21.6" y="33" fontSize="6.5"> 12%</tspan></text>
-        </g>
-        <g>
-          <rect x="67.2" y="216.6" fill="#F7941E" width="20.9" height="2"/>
-          <rect x="67.2" y="228.8" fill="#F7941E" width="11" height="2"/>
-          <rect x="67.2" y="241" fill="#F7941E" width="8.7" height="2"/>
-        </g>
-        <line fill="none" stroke="#F7941E" strokeWidth="0.3" strokeMiterlimit="10" x1="67.2" y1="199.6" x2="67.2" y2="243"/>
-      </g>
-      <g id="To">
-        <polygon fill="#00A4DB" points="230.4,193.6 241.3,193.6 252.2,193.6 252.2,197.6 252.2,201.6 241.3,201.6 230.4,201.6
-          227.4,197.6"/>
-        <polygon fill="#00526D" points="193,145.5 203.9,145.5 219.2,145.5 219.2,149.5 219.2,153.5 203.9,153.5 193,153.5 190,149.5"/>
-        <polygon fill="#ED1C24" points="190.8,208.2 201.7,208.2 207.5,208.2 207.5,212.2 207.5,216.2 201.7,216.2 190.8,216.2
-          187.8,212.2"/>
-        <polygon fill="#F7941E" points="50.2,198.5 61.1,198.5 67.4,198.5 67.4,202.5 67.4,206.5 61.1,206.5 50.2,206.5 47.2,202.5"/>
+        {this.balkanGraph}
+        {this.eMedGraph}
+        {this.cMedGraph}
+        {this.wMedGraph}
       </g>
       <g className="key" transform="translate(205,3)">
         <rect fill="#FFFFFF" stroke="#00526D" strokeWidth="0.261" width="122" height="28.2"/>
