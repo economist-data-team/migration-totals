@@ -25,3 +25,13 @@
   font-weight: normal;
   font-size: 14px;
 }
+
+.interactive-footer .source-element {
+  &:after {
+    content : '; ';
+  }
+
+  &:last-child:after {
+    content : '';
+  }
+}

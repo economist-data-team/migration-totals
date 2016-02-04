@@ -22,7 +22,7 @@ import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
 import TreemapRaw from './treemap.js';
 import ChartLegend from './legend.js';
-import SourceLabel from './source.js';
+import Footer from './footer.js';
 import TooltipRaw from './tooltip.js';
 import SankeyRaw from './sankey.js';
 import MigrantRoutesMapRaw from './migrant-routes-map.js';
@@ -252,9 +252,6 @@ class ColumnFrame extends React.Component {
         <ChartLegend {...legendProps} />
         <Treemap {...treemapProps} />
       </svg>
-      <svg width="595" height="50">
-        <SourceLabel text="Source: to come" />
-       </svg>
     </div>)
   }
 }
@@ -486,6 +483,7 @@ class Chart extends ChartContainer {
         <Header title="To come" subtitle="Also to come"/>
         <Stepper {...stepperProps} />
         <MigrationFSM />
+        <Footer sources={['Eurostat', 'Frontex', 'The Economist']} sourceItal={[false,false,true]}/>
         <Tooltip bottomAnchor={true} />
       </div>
     );
