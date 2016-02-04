@@ -1,8 +1,80 @@
+import d3 from 'd3';
 import React from 'react';
 import BoundedSVG from './bounded-svg.js';
 import { generateTranslateString } from './utilities.js';
 
-export default class MigrantRoutesMap extends BoundedSVG{
+var numberFormat = d3.format(',');
+
+export default class MigrantRoutesMap extends React.Component {
+  static get defaultProps() {
+    return {
+      data : []
+    };
+  }
+  get circScale() {
+    var scale = d3.scale.sqrt().range([0,36]);
+    if(this.props.data) {
+      var circleValues = this.props.data.map(d => d.number);
+      scale.domain([0, d3.max(circleValues)])
+    }
+    return scale;
+  }
+  get balkanCircle() {
+    var circleData = this.props.data.find(d => d.loc === 'w_balk');
+    if(!circleData) { return null; }
+
+    var radius = this.circScale(circleData.number);
+    return(<g id="circle_western_balkans" transform={generateTranslateString(327-radius, 70)}>
+      <circle fill="#003F59" r={radius} opacity="0.9"/>
+      <text textAnchor="middle" transform="translate(0,-5)">
+        <tspan x="0" dy="0" fill="#FFFFFF" fontSize="7" className="circle-title">Western</tspan>
+        <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-title">Balkans</tspan>
+        <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-value">{numberFormat(circleData.number)}</tspan>
+      </text>
+    </g>);
+  }
+  get eMedCircle() {
+    var circleData = this.props.data.find(d => d.loc === 'e_med');
+    if(!circleData) { return null; }
+
+    var radius = this.circScale(circleData.number);
+    return(<g id="circle_eastern_mediterranean" transform={generateTranslateString(327-radius, 162.5)}>
+      <circle r={radius} fill="#008BB0" opacity="0.9"/>
+      <text textAnchor="middle" transform="translate(0,-5)">
+        <tspan x="0" dy="0" fill="#FFFFFF" fontSize="7" className="circle-title">Eastern</tspan>
+        <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-title">Mediterranean</tspan>
+        <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-value">{numberFormat(circleData.number)}</tspan>
+      </text>
+    </g>);
+  }
+  get cMedCircle() {
+    var circleData = this.props.data.find(d => d.loc === 'c_med');
+    if(!circleData) { return null; }
+
+    var radius = this.circScale(circleData.number);
+    return(<g id="circle_central_mediterranean" transform={generateTranslateString(204 - radius, 236.5)}>
+      <circle r={radius} fill="#ED1C24" opacity="0.9" />
+      <text opacity="0.9" textAnchor="end" transform={generateTranslateString(-(radius+2),0)}>
+        <tspan x="0" dy="0" fill="#ED1C24" fontSize="7" className="circle-title">Central</tspan>
+        <tspan x="0" dy="7" fill="#ED1C24" fontSize="7" className="circle-title">Mediterranean</tspan>
+        <tspan x="0" dy="7" fill="#ED1C24" fontSize="7" className="circle-value">{numberFormat(circleData.number)}</tspan>
+      </text>
+    </g>);
+  }
+  get wMedCircle() {
+    var circleData = this.props.data.find(d => d.loc === 'w_med');
+    if(!circleData) { return null; }
+
+    var radius = this.circScale(circleData.number);
+    return(<g id="circle_western_mediterranean" transform={generateTranslateString(45,214 + radius)}>
+      <circle r={radius} fill="#F47B20" opacity="0.9" />
+      <text textAnchor="end" transform={generateTranslateString(radius, 7+radius)}>
+        <tspan x="0" y="0" fill="#E87C1E" fontSize="7" className="circle-title">Western</tspan>
+        <tspan x="0" y="7" fill="#E87C1E" fontSize="7" className="circle-title">Mediterranean</tspan>
+        <tspan x="0" y="14" fill="#E87C1E" fontSize="7" className="circle-value">{numberFormat(circleData.number)}</tspan>
+      </text>
+    </g>);
+  }
   render() {
     return (<svg width="575" height="442" viewBox="0 0 332 255" className="migrant-euromap">
       <g id="BKGD">
@@ -769,38 +841,10 @@ export default class MigrantRoutesMap extends BoundedSVG{
         </g>
       </g>
       <g className="circles">
-        <g id="circle_western_balkans" transform="translate(294.865,69.744)">
-          <circle fill="#003F59" r="33.9435" opacity="0.9"/>
-          <text textAnchor="middle" transform="translate(0,-5)">
-            <tspan x="0" dy="0" fill="#FFFFFF" fontSize="7" className="circle-title">Western</tspan>
-            <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-title">Balkans</tspan>
-            <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-value">764,038</tspan>
-          </text>
-        </g>
-        <g id="circle_eastern_mediterranean" transform="translate(292.956,162.523)">
-          <circle r="36.5395" fill="#008BB0" opacity="0.9"/>
-          <text textAnchor="middle" transform="translate(0,-5)">
-            <tspan x="0" dy="0" fill="#FFFFFF" fontSize="7" className="circle-title">Eastern</tspan>
-            <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-title">Mediterranean</tspan>
-            <tspan x="0" dy="7" fill="#FFFFFF" fontSize="7" className="circle-value">885,386</tspan>
-          </text>
-        </g>
-        <g id="circle_central_mediterranean" transform="translate(188.305,236.591)">
-          <circle r="15.2365" fill="#ED1C24" opacity="0.9" />
-          <text opacity="0.9" textAnchor="end" transform="translate(-18, 0)">
-            <tspan x="0" dy="0" fill="#ED1C24" fontSize="7" className="circle-title">Central</tspan>
-            <tspan x="0" dy="7" fill="#ED1C24" fontSize="7" className="circle-title">Mediterranean</tspan>
-            <tspan x="0" dy="7" fill="#ED1C24" fontSize="7" className="circle-value">153,946</tspan>
-          </text>
-        </g>
-        <g id="circle_western_mediterranean" transform="translate(45,218)">
-          <circle r="3.287" fill="#F47B20" opacity="0.9" />
-          <text textAnchor="end" transform={generateTranslateString(3.287, 5+5)}>
-            <tspan x="0" y="0" fill="#E87C1E" fontSize="7" className="circle-title">Western</tspan>
-            <tspan x="0" y="7" fill="#E87C1E" fontSize="7" className="circle-title">Mediterranean</tspan>
-            <tspan x="0" y="14" fill="#E87C1E" fontSize="7" className="circle-value">7,164</tspan>
-          </text>
-        </g>
+        {this.balkanCircle}
+        {this.eMedCircle}
+        {this.cMedCircle}
+        {this.wMedCircle}
       </g>
       <g id="From">
         <g>
