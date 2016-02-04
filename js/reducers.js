@@ -9,7 +9,7 @@ import {
 var initialState = {
   data : [],
   sankeyData : { links : [], nodes : [] },
-  stepperValue : 'apps',
+  stepperValue : 'sankey',
   tooltipShow : false,
   tooltipContents : null
 };

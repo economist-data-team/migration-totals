@@ -25,6 +25,7 @@ import ChartLegend from './legend.js';
 import SourceLabel from './source.js';
 import TooltipRaw from './tooltip.js';
 import SankeyRaw from './sankey.js';
+import MigrantRoutesMapRaw from './migrant-routes-map.js';
 // import ReSortToggle from './re-sort-toggle.js';
 
 import countries from './countries.js';
@@ -69,6 +70,10 @@ var Sankey = connectMap({
   data : 'sankeyData'
 })(SankeyRaw);
 
+var MigrantRoutesMap = connectMap({
+
+})(MigrantRoutesMapRaw);
+
 // Array of Step constructors
 var mousePosition = {x:0, y:0};
 var Tooltip = connect(function(state) {
@@ -96,11 +101,11 @@ var steps = [
     Balkan countries like Kosovo and Albania. Around one-third of
     claims this year have been made in Germany.</span>), '1'
   ),
-  new Step('sankey', <span>Sankey sankey sankey</span>, 'S'),
-  new Step('recog', (<span>
-    But not all of these asylum seekers will make it in. Recognition rates vary from country
-    to country.</span>), '2'
-  ),
+  new Step('sankey', <span>Sankey sankey sankey</span>, '2'),
+  // new Step('recog', (<span>
+  //   But not all of these asylum seekers will make it in. Recognition rates vary from country
+  //   to country.</span>), '2'
+  // ),
   new Step('reloc', (<span>
     Under a controversial plan agreed earlier this year, up to 160,000
     asylum-seekers from Syria, Eritrea and Iraq who reach Italy and
@@ -443,7 +448,7 @@ class MigrationFSMRaw extends React.Component {
     };
     return (<div>
       <Sankey {...sankeyProps} />
-      <img src="./images/20150829_EUM981.png" width="595"/>
+      <MigrantRoutesMap/>
     </div>);
   }
 
