@@ -970,7 +970,7 @@ export default class MigrantRoutesMap extends React.Component {
             </g>
           </g>
           <g>
-            <text transform="matrix(1 0 0 1 226.065 186.9859)" fill="#3C6950" fontSize="6">Lesbos</text>
+            <text transform="matrix(1 0 0 1 226.065 188.4859)" fill="#3C6950" fontSize="6.5" className="side-note">Lesbos</text>
           </g>
         </g>
       </g>
