@@ -185,9 +185,19 @@ export default class Sankey extends SVGComponent {
         'data-type' : d => d.type,
         'data-source' : d => d.source.name,
         'data-target' : d => d.target.name,
-        'data-value' : d => d.value
+        'data-value' : d => d.value,
+        // for SVG crowbar
+        // opacity : 0.3,
+        // stroke : d => {
+        //   if(d.type === 'o_d') { return '#2b87a6'; }
+        //   if(d.type === 'd_dc') { return '#fba74a'; }
+        //   if(d.type === 'dc_odc') {
+        //     return d.source.name === 'accepted' ? '#4aa4a1' : '#f15a40';
+        //   }
+        // },
+        // fill : 'none'
       })
-      .style('stroke-width', d => Math.max(1, d.dy))
+      .attr('stroke-width', d => Math.max(1, d.dy))
       .sort((a,b) => { return b.dy - a.dy });
 
     var nodes = this.selectRef('nodes');

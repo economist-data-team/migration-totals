@@ -16,12 +16,12 @@ export default class BoundedSVG extends SVGComponent {
   }
 
   get margins() { return parseMarginArray(this.props.margin); }
-  get leftBound() { return this.margin.left; }
-  get rightBound() { return this.props.width - this.margin.right; }
-  get topBound() { return this.margin.top; }
-  get bottomBound() { return this.props.height - this.margin.bottom; }
-  get widthSpan() { return this.props.width - this.margin.left - this.margin.right; }
-  get heightSpan() { return this.props.height - this.margin.top - this.margin.bottom; }
+  get leftBound() { return this.margins.left; }
+  get rightBound() { return this.props.width - this.margins.right; }
+  get topBound() { return this.margins.top; }
+  get bottomBound() { return this.props.height - this.margins.bottom; }
+  get widthSpan() { return this.props.width - this.margins.left - this.margins.right; }
+  get heightSpan() { return this.props.height - this.margins.top - this.margins.bottom; }
 
   // mostly for debugging
   get boundingPolygonPoints() {
