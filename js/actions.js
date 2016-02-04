@@ -3,6 +3,7 @@ export const UPDATE_COUNTRY_DATA = 'UPDATE_COUNTRY_DATA';
 export const UPDATE_APPS_DATA = 'UPDATE_APPS_DATA';
 export const UPDATE_SANKEY_DATA = 'UPDATE_SANKEY_DATA';
 export const UPDATE_STEPPER_VALUE = 'UPDATE_STEPPER_VALUE';
+export const UPDATE_FLOWS_DATA = 'UPDATE_FLOWS_DATA';
 export const CHANGE_TOOLTIP = 'CHANGE_TOOLTIP';
 export const UPDATE_COLUMN_CHART_HIGHLIGHT = 'UPDATE_COLUMN_CHART_HIGHLIGHT';
 
@@ -27,6 +28,12 @@ export function updateAppsData(data) {
 export function updateSankeyData(data) {
   return {
     type : UPDATE_SANKEY_DATA,
+    data
+  };
+}
+export function updateFlowsData(data) {
+  return {
+    type : UPDATE_FLOWS_DATA,
     data
   };
 }

@@ -38,7 +38,7 @@ import { connect, Provider } from 'react-redux';
 import {
   updateSourceData, updateCountryData,
   updateAppsData, updateStepperValue,
-  updateSankeyData,
+  updateSankeyData, updateFlowsData,
   updateColumnChartHighlight,
   clearColumnChartHighlight,
   showTooltip, hideTooltip
@@ -71,7 +71,7 @@ var Sankey = connectMap({
 })(SankeyRaw);
 
 var MigrantRoutesMap = connectMap({
-
+  data : 'flowsData'
 })(MigrantRoutesMapRaw);
 
 // Array of Step constructors
@@ -669,4 +669,8 @@ d3.csv('./data/sankey.csv', function(error, data) {
   links = links.union(o_d).union(d_dc).union(dc_odc);
 
   store.dispatch(updateSankeyData({ links : links.toJS(), nodes : nodes.toJS() }));
+});
+
+d3.csv('./data/flows.csv', function(data) {
+  store.dispatch(updateFlowsData(data.map(parseNumerics)));
 });

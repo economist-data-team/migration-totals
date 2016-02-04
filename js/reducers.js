@@ -1,7 +1,7 @@
 import d3 from 'd3';
 import {
   UPDATE_SOURCE_DATA, UPDATE_COUNTRY_DATA, UPDATE_APPS_DATA,
-  UPDATE_SANKEY_DATA,
+  UPDATE_SANKEY_DATA, UPDATE_FLOWS_DATA,
   UPDATE_STEPPER_VALUE, UPDATE_COLUMN_CHART_HIGHLIGHT,
   CHANGE_TOOLTIP
 } from './actions.js';
@@ -9,6 +9,7 @@ import {
 var initialState = {
   data : [],
   sankeyData : { links : [], nodes : [] },
+  flowsData : [],
   stepperValue : 'sankey',
   tooltipShow : false,
   tooltipContents : null
@@ -28,6 +29,10 @@ function appsDataReducer(state = [], action) {
 }
 function sankeyDataReducer(state = initialState.sankeyData, action) {
   if(action.type !== UPDATE_SANKEY_DATA) { return state; }
+  return action.data;
+}
+function flowsDataReducer(state = initialState.flowsData, action) {
+  if(action.type !== UPDATE_FLOWS_DATA) { return state; }
   return action.data;
 }
 function stepperReducer(state = '', action) {
@@ -60,6 +65,7 @@ export default function updateState(state = initialState, action) {
     countryData : countryDataReducer(state.countryData, action),
     appsData : appsDataReducer(state.appsData, action),
     sankeyData : sankeyDataReducer(state.sankeyData, action),
+    flowsData : flowsDataReducer(state.flowsData, action),
     stepperValue : stepperReducer(state.stepperValue, action),
     appsScale : appsScaleReducer(state.appsScale, action),
     columnChartHighlight : columnChartHighlightReducer(

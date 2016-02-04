@@ -217,6 +217,7 @@
 
 /*all the font sizes in here are weird*/
 .migrant-euromap {
+  margin: 10px;
 
   .circle-title {
     font-weight: bold;

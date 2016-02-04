@@ -4,7 +4,7 @@ import { generateTranslateString } from './utilities.js';
 
 export default class MigrantRoutesMap extends BoundedSVG{
   render() {
-    return (<svg width="595" height="457" viewBox="0 0 332 255" className="migrant-euromap">
+    return (<svg width="575" height="442" viewBox="0 0 332 255" className="migrant-euromap">
       <g id="BKGD">
         <rect x="0" y="0" fill="#FFFFFF" width="332" height="255"/>
       </g>
@@ -768,7 +768,7 @@ export default class MigrantRoutesMap extends BoundedSVG{
           </g>
         </g>
       </g>
-      <g class="circles">
+      <g className="circles">
         <g id="circle_western_balkans" transform="translate(294.865,69.744)">
           <circle fill="#003F59" r="33.9435" opacity="0.9"/>
           <text textAnchor="middle" transform="translate(0,-5)">
@@ -858,35 +858,35 @@ export default class MigrantRoutesMap extends BoundedSVG{
           187.8,212.2"/>
         <polygon fill="#F7941E" points="50.2,198.5 61.1,198.5 67.4,198.5 67.4,202.5 67.4,206.5 61.1,206.5 50.2,206.5 47.2,202.5"/>
       </g>
-      <g className="key">
-        <g>
-          <text transform="matrix(0.97 0 0 1 223.4624 17.3076)"><tspan x="0" y="0" fontSize="6">Main EU  </tspan><tspan x="0" y="6.5" fontSize="6">entry point</tspan></text>
+      <g className="key" transform="translate(205,3)">
+        <rect fill="#FFFFFF" stroke="#00526D" strokeWidth="0.261" width="122" height="28.2"/>
+
+        <g transform="translate(4,3)">
+          <rect fill="#9ACFD0" stroke="#000000" strokeWidth="0.3" width="6" height="6"/>
+          <text x="8" y="5" fontSize="6.5">Schengen Area</text>
         </g>
-        <g>
-          <g>
-            <polygon fill="#808285" points="216.5,12.5 221.3,12.5 221.3,18.3 216.5,18.3 213.8,15.4"/>
-          </g>
-          <g>
-            <rect x="221.1" y="12.5" fill="#808285" width="0.5" height="12.2"/>
-          </g>
+
+        <g transform="translate(4,13)">
+          <rect fill="#64ABAF" stroke="#000000" strokeWidth="0.3" width="6" height="6"/>
+          <text x="8" y="5" fontSize="6.5">
+            <tspan x="8" dy="0">Schengen</tspan>
+            <tspan x="8" dy="7">but not EU</tspan>
+          </text>
         </g>
-        <rect x="211.8" y="3" fill="#FFFFFF" stroke="#00526D" strokeWidth="0.261" width="117.2" height="28.2"/>
-        <g>
-          <text transform="matrix(0.97 0 0 1 223.4624 10.7731)" fontSize="6">Schengen Area</text>
+
+        <g transform="translate(55,3)">
+          <rect fill="#E7D1B9" stroke="#000000" strokeWidth="0.3" width="6" height="6"/>
+          <text x="8" y="5" fontSize="6.5">EU but not Schengen</text>
         </g>
-        <g>
-          <text transform="matrix(0.97 0 0 1 270.7812 21.2731)"><tspan x="0" y="0" fontSize="6">“Hotspots” - </tspan><tspan x="30.4" y="0" fontSize="6">registration</tspan><tspan x="0" y="6.5" fontSize="6">&amp; processing centres</tspan></text>
+
+        <g transform="translate(45,13)">
+          <circle fill="#3C6950" fillOpacity="0.6" stroke="#3C6950" cx="2.5" cy="2.5" strokeWidth="0.3" r="2.5"/>
+          <text x="8" y="5" fontSize="6.5">
+            <tspan x="8" dy="0">“Hotspots” - </tspan>
+            <tspan dy="0">registration</tspan>
+            <tspan x="8" dy="6.5">&amp; processing centres</tspan>
+          </text>
         </g>
-        <g>
-          <text transform="matrix(0.97 0 0 1 270.7812 10.7731)" fontSize="6">EU but not Schengen  </text>
-        </g>
-        <rect x="215" y="5.7" fill="#9ACFD0" stroke="#000000" strokeWidth="0.3" width="6" height="6"/>
-        <rect x="262.4" y="5.7" fill="#E7D1B9" stroke="#000000" strokeWidth="0.3" width="6" height="6"/>
-        <g>
-          <text transform="matrix(0.97 0 0 1 223.4624 21.2731)"><tspan x="0" y="0" fontSize="6">Schengen  </tspan><tspan x="0" y="6.5" fontSize="6">but not EU  </tspan></text>
-        </g>
-        <circle fill="#3C6950" fillOpacity="0.6" stroke="#3C6950" strokeWidth="0.3" cx="265.4" cy="19.4" r="2.5"/>
-        <rect x="215" y="16.2" fill="#64ABAF" stroke="#000000" strokeWidth="0.3" width="6" height="6"/>
       </g>
     </svg>);
   }
