@@ -94,35 +94,41 @@ var Tooltip = connect(function(state) {
 
 var steps = [
   new Step('apps', (<div>
-    <h4>This is a header</h4>
+    <h4>Asylum applications and countries of origin</h4>
     Asylum claims to European Union countries are at their highest
-    since records began. Around one-quarter of this year’s applicants
-    are Syrian. But Iraqis and Afghans fleeing war and poverty also
+    since records began. Around one-quarter of 2015’s applicants were
+    Syrian. But Iraqis and Afghans fleeing war and poverty also
     account for a large share, as do largely economic migrants from
-    Balkan countries like Kosovo and Albania. Around one-third of
-    claims this year have been made in Germany.</div>), '1'
+    Balkan countries like Kosovo and Albania. Around one-third of last
+    year’s claims were made in Germany.</div>), '1'
   ),
+  new Step('map', <div>
+    <h4>Routes into Europe</h4>
+    Stuff.</div>, '2'),
   new Step('sankey', <div>
-    <h4>Header</h4>
-    Sankey sankey sankey</div>, '2'),
+    <h4>Acceptance decisions</h4>
+    Sankey sankey sankey</div>, '3'),
   // new Step('recog', (<div>
   //   But not all of these asylum seekers will make it in. Recognition rates vary from country
   //   to country.</div>), '2'
   // ),
   new Step('reloc', (<div>
-    Under a controversial plan agreed earlier this year, up to 160,000
-    asylum-seekers from Syria, Eritrea and Iraq who reach Italy and
-    Greece will be relocated to most other EU countries (and some,
-    like Norway, that are outside the club). The number each country
-    must accept is calculated according to economic performance,
-    population and previous asylum efforts. Relocations began in
-    October.  </div>), '3'
+    <h4>EU relocation proposals</h4>
+    Under a controversial 2015 EU plan, up to 160,000 asylum-seekers
+    from Syria, Eritrea and Iraq who reach Italy and Greece will be
+    relocated to most other EU countries (and some outside the club,
+    like Norway). The number each country must accept is calculated
+    according to economic performance, population and previous
+    asylum efforts. Relocations began in October last year.
+</div>), '4'
   ),
   new Step('resettle', (<div>
+    <h4>Resettlement pledges</h4>
     Most EU countries have also agreed to resettle refugees directly
     from countries like Turkey, Jordan and Lebanon, as well as some
-    camps in Africa. An EU-wide scheme agreed this year was limited to
-    22,000 refugees; a bigger proposal will be put forward in 2016.</div>), '4'
+    camps in Africa. An EU-wide scheme agreed in 2015 was limited to
+    22,000 refugees; a bigger proposal will be put forward this
+    year.</div>), '5'
   )
 ];
 
@@ -399,7 +405,7 @@ var rawGroups = {
     colour : [colours.blue[3], colours.red[0]]
   },
   asylumPositive : {
-    label: 'Positive decisions',
+    label: 'Positive asylum decisions',
     groupKey : 'asylum',
     dataKey : 'positive',
     scale : positiveScale,
@@ -454,6 +460,11 @@ class MigrationFSMRaw extends React.Component {
 
     return (<BarFrame {...barProps} />);
   }
+  get mapStep() {
+    return (<div>
+      <MigrantRoutesMap/>
+    </div>);
+  }
   get sankeyStep() {
     var sankeyProps = {
       width : 575,
@@ -467,7 +478,6 @@ class MigrationFSMRaw extends React.Component {
       nodeWidth : 20
     };
     return (<div>
-      <MigrantRoutesMap/>
       <Sankey {...sankeyProps} />
     </div>);
   }
@@ -476,6 +486,8 @@ class MigrationFSMRaw extends React.Component {
     switch(this.props.step) {
       case 'apps':
         return this.columnStep;
+      case 'map':
+        return this.mapStep;
       case 'sankey':
         return this.sankeyStep;
       case 'recog':
