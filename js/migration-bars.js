@@ -196,7 +196,7 @@ export default class MigrationBars extends BoundedSVG {
       return (<BarGroup {...barGroupProps} />);
     });
 
-    return (<svg width="595" height="700">
+    return (<svg width="595" height="650">
       <BarLabels {...labelsProps}/>
       {barGroups}
     </svg>);

@@ -58,7 +58,7 @@ var columnChartMonthFormatter = d3.time.format('%B %Y');
 var applicantFormat = d3.format(',.0f');
 
 var stepNotes = {
-  'sankey' : (<span></span>),
+  'sankey' : (<span className="note">*First-instance decisions only</span>),
   'reloc' : (<span className="note">*From Syria, Eritrea, and Iraq</span>)
 };
 
@@ -518,7 +518,7 @@ class MigrationFSMRaw extends React.Component {
       axes : [
         { name : 'Origin', unit : '' },
         { name : 'Destination', unit : '' },
-        { name : 'Total decisions†', unit : '', side : 'right' },
+        { name : 'Total decisions*', unit : '', side : 'right' },
         { name : 'Decisions by origin', unit : '% accepted', side : 'right' }
       ],
       height : 400,
