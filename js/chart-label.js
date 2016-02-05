@@ -2,8 +2,10 @@ import React from 'react';
 import BoundedSVG from './bounded-svg.js';
 import { Im, generateTranslateString } from './utilities.js';
 
-function textFunc(_words, characters) {
+export function textFunc(text, characters) {
   var _texts = [];
+
+  var _words = text.split(' ');
 
   while(_words.join(' ').length > characters) {
     let nextLine = [];
@@ -32,11 +34,9 @@ export default class ChartLabel extends BoundedSVG {
   get textElements() {
     // we're just going to make a guess here:
     var characters = this.props.width * 2 / this.props.fontSize;
-    var words = this.props.text.split(' ');
-    var wordssub = this.props.subtitle.split(' ');
 
-    var texts = textFunc(words, characters);
-    var subtitles = textFunc(wordssub, characters);
+    var texts = textFunc(this.props.text, characters);
+    var subtitles = textFunc(this.props.subtitle, characters);
 
     return texts.map((line, idx) => {
       return (<text x="5" y={(idx + 1) * (this.props.fontSize * 1.2) + 3} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
