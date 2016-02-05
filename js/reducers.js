@@ -10,7 +10,7 @@ var initialState = {
   data : [],
   sankeyData : { links : [], nodes : [] },
   flowsData : [],
-  stepperValue : 'sankey',
+  stepperValue : 'apps',
   tooltipShow : false,
   tooltipContents : null
 };
