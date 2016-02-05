@@ -246,6 +246,13 @@ class ColumnFrame extends React.Component {
         <ColumnChartLabelRaw {...columnChartLabelProps} />
         <AxisRaw {...columnAxisProps} />
         <ChartLabel text="Monthly asylum applications to Europe" />
+        <g className="column-chart-key" transform="translate(10, 80)">
+          <text x='5' y='06' fontSize="13" fontStyle='italic'>To:</text>
+          <rect x='5' y='10' fill={colours.blue[1]} height='35' width='5' />
+          <text x='12' y='21' fontSize='13' fill={colours.blue[1]}>Europe</text>
+          <rect x='5' y='45' fill={colours.red[0]} height='15' width='5'/>
+          <text x='12' y='56' fontSize='13' fill={colours.red[0]}>of which, Germany</text>
+        </g>
       </svg>
       <svg width="595" height="400">
         <ChartLabel text="Asylum applications to Europe" subtitle="October 2014 - October 2015" />
@@ -490,7 +497,7 @@ class Chart extends ChartContainer {
 
     return(
       <div className='chart-container'>
-        <Header title="To come" subtitle="Also to come"/>
+        <Header title="European migrant crisis guide"/>
         <Stepper {...stepperProps} />
         <MigrationFSM />
         <Footer sources={['Eurostat', 'Frontex', 'The Economist']} sourceItal={[false,false,true]}/>
