@@ -326,7 +326,7 @@ class MigrationColumnHeaderRaw extends BoundedSVG {
     });
 
     return (<g>
-      <g transform="translate(10,0)">
+      <g transform="translate(10,0)" className="label-group">
         {texts}
       </g>
       {toppers}
@@ -406,10 +406,10 @@ class BarFrame extends React.Component {
 }
 
 // these scales are for the per-country bars
-var fullScale = d3.scale.linear().domain([0, 200000]).range([115, 575]);
-var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 295]);
-var relocScale = d3.scale.linear().domain([0,50000]).range([315, 435]);
-var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 575]);
+var fullScale = d3.scale.linear().domain([0, 200000]).range([115, 595]);
+var positiveScale = d3.scale.linear().domain([0, 75000]).range([115, 385]); // formerly 115, 295
+var relocScale = d3.scale.linear().domain([0,50000]).range([405, 585]); // formerly 315, 435
+var resettleScale = d3.scale.linear().domain([0,50000]).range([455, 595]); // not used at present
 
 var rawGroups = {
   asylumFull : {
@@ -453,7 +453,7 @@ var stepGroups = {
   resettle : [ rawGroups.asylumPositive, rawGroups.reloc, rawGroups.resettle ]
 };
 var stepLabels = {
-  reloc : 'Accepted applications and relocation promises',
+  reloc : 'Applications and potential relocations',
   resettle : 'Agreed resettlements'
 };
 
@@ -613,7 +613,7 @@ d3.csv('./data/countries.csv', function(error, data) {
 
   var span = end - start;
   // 20px for gutters
-  var factor = (span - 40) / (positiveMax + reMax * 2);
+  var factor = (span - 40) / (positiveMax + reMax);
   var positions = [0, positiveMax, positiveMax + reMax, positiveMax + reMax * 2].map(n => start + n * factor);
 
   positiveScale.domain([0, positiveMax]).range(positions.slice(0,2));
