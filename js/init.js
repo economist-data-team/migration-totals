@@ -137,9 +137,9 @@ var steps = [
     <h4>Acceptances and EU relocation proposals</h4>
     While Germany and Sweden have accepted a disproportionate share of
     Europe’s asylum seekers, countries on the front line of the influx
-    must initially accommodate the new arrivals. Under a controversial
-    EU plan, up to 160,000 asylum-seekers* who have reached Italy,
-    Greece and Hungary are to be relocated to other European countries.
+    must initially accommodate the sheer volume of new arrivals. Under a controversial
+    EU plan, up to 160,000 asylum-seekers* in Italy,
+    Greece and Hungary are to be relocated to other EU countries.
     So far, only a few hundred have moved.</div>), '4'
   )//,
   // new Step('resettle', (<div>
