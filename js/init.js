@@ -13,7 +13,7 @@ import colours from './econ_colours.js';
 
 import Header from './header.js';
 import StepperRaw, { Step } from './stepper.js';
-import ChartLabel from './chart-label.js';
+import ChartLabel, {textFunc} from './chart-label.js';
 import ChartContainer from './chart-container.js';
 import ColumnChartRaw from './column-chart.js';
 import ColumnChartLabelRaw from './column-chart-label.js';
@@ -120,7 +120,7 @@ var steps = [
     like Norway). The number each country must accept is calculated
     according to economic performance, population and previous
     asylum efforts. Relocations began in October last year.
-</div>), '4'
+    </div>), '4'
   ),
   new Step('resettle', (<div>
     <h4>Resettlement pledges</h4>
@@ -315,7 +315,20 @@ class MigrationColumnHeaderRaw extends BoundedSVG {
       return (<text className="migration-column-label" {...textProps}>{label}</text>);
     });
 
+    var fontSize = 14;
+    var texts = textFunc(this.props.label, 20).map((line, idx) => {
+      var textProps = {
+        fontSize : fontSize,
+        x : 0,
+        y : (idx + 1) * (fontSize * 1.2) + 3
+      };
+      return (<text {...textProps}>{line.join(' ')}</text>);
+    });
+
     return (<g>
+      <g transform="translate(10,0)">
+        {texts}
+      </g>
       {toppers}
       {labels}
     </g>);
@@ -328,6 +341,7 @@ var MigrationColumnHeader = connectMap({
 class BarFrame extends React.Component {
   static get defaultProps() {
     return {
+      label : 'A chart',
       data : [],
       groups : [
         {
@@ -369,7 +383,8 @@ class BarFrame extends React.Component {
     });
 
     var headerProps = {
-      groups : this.props.groups
+      groups : this.props.groups,
+      label : this.props.label
     };
 
     var props = {
@@ -437,6 +452,10 @@ var stepGroups = {
   reloc : [ rawGroups.asylumPositive, rawGroups.reloc ],
   resettle : [ rawGroups.asylumPositive, rawGroups.reloc, rawGroups.resettle ]
 };
+var stepLabels = {
+  reloc : 'Accepted applications and relocation promises',
+  resettle : 'Agreed resettlements'
+};
 
 class MigrationFSMRaw extends React.Component {
   static get defaultProps() {
@@ -454,6 +473,7 @@ class MigrationFSMRaw extends React.Component {
   }
   get barStep() {
     var barProps = {
+      label : stepLabels[this.props.step],
       data : this.props.barData,
       groups : stepGroups[this.props.step]
     };
