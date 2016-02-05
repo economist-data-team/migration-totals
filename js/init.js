@@ -22,7 +22,7 @@ import AxisRaw from './axis.js';
 import MigrationBarsRaw from './migration-bars.js';
 import TreemapRaw from './treemap.js';
 import ChartLegend from './legend.js';
-import Footer from './footer.js';
+import FooterRaw from './footer.js';
 import TooltipRaw from './tooltip.js';
 import SankeyRaw from './sankey.js';
 import MigrantRoutesMapRaw from './migrant-routes-map.js';
@@ -57,6 +57,11 @@ window.store = store;
 var columnChartMonthFormatter = d3.time.format('%B %Y');
 var applicantFormat = d3.format(',.0f');
 
+var stepNotes = {
+  'sankey' : (<span></span>),
+  'reloc' : (<span className="note">*From Syria, Eritrea, and Iraq</span>)
+};
+
 var Stepper = connectMap({
   value : 'stepperValue'
 })(StepperRaw);
@@ -73,6 +78,12 @@ var Sankey = connectMap({
 var MigrantRoutesMap = connectMap({
   data : 'flowsData'
 })(MigrantRoutesMapRaw);
+
+var Footer = connect(function(state) {
+  return {
+    notes : stepNotes[state.stepperValue]
+  };
+})(FooterRaw);
 
 // Array of Step constructors
 var mousePosition = {x:0, y:0};
@@ -95,7 +106,7 @@ var Tooltip = connect(function(state) {
 var steps = [
   new Step('apps', (<div>
     <h4>Asylum applications and countries of origin</h4>
-    Asylum claims to European Union countries are at their highest
+    Asylum claims to European countries are at their highest
     since records began. Around one-quarter of 2015’s applicants were
     Syrian. But Iraqis and Afghans fleeing war and poverty also
     account for a large share, as do largely economic migrants from
@@ -104,23 +115,32 @@ var steps = [
   ),
   new Step('map', <div>
     <h4>Routes into Europe</h4>
-    Stuff.</div>, '2'),
+    Conflicts in places like Syria and Iraq have dragged on, leaving
+    millions stranded in refugee camps on their periphery. As stays in
+    camps stretch to years, the hazardous journey to Europe becomes
+    more appealing and more join the migrant trail. Most European
+    nations have responded by unilaterally closing borders and
+    tightening asylum rules, hoping to discourage them.</div>, '2'),
   new Step('sankey', <div>
     <h4>Acceptance decisions</h4>
-    Sankey sankey sankey</div>, '3'),
+    For migrants that successfully reach the country in which they
+    hope to settle, they must file an asylum application with its
+    government. Acceptance depends mostly upon country of origin.
+    European countries have tried to control the influx through border
+    controls and policies designed to discourage asylum seekers from
+    applying.</div>, '3'),
   // new Step('recog', (<div>
   //   But not all of these asylum seekers will make it in. Recognition rates vary from country
   //   to country.</div>), '2'
   // ),
   new Step('reloc', (<div>
-    <h4>EU relocation proposals</h4>
-    Under a controversial 2015 EU plan, up to 160,000 asylum-seekers
-    from Syria, Eritrea and Iraq who reach Italy and Greece will be
-    relocated to most other EU countries (and some outside the club,
-    like Norway). The number each country must accept is calculated
-    according to economic performance, population and previous
-    asylum efforts. Relocations began in October last year.
-    </div>), '4'
+    <h4>Acceptances and EU relocation proposals</h4>
+    While Germany and Sweden have accepted a disproportionate share of
+    Europe’s asylum seekers, countries on the front line of the influx
+    must initially accommodate the new arrivals. Under a controversial
+    EU plan, up to 160,000 asylum-seekers* who have reached Italy,
+    Greece and Hungary are to be relocated to other European countries.
+    So far, only a few hundred have moved.</div>), '4'
   )//,
   // new Step('resettle', (<div>
   //   <h4>Resettlement pledges</h4>
@@ -131,6 +151,7 @@ var steps = [
   //   year.</div>), '5'
   // )
 ];
+
 
 // Time format function
 var dateFormatter = d3.time.format('%d/%m/%Y');
@@ -317,7 +338,7 @@ class MigrationColumnHeaderRaw extends BoundedSVG {
     });
 
     var fontSize = 14;
-    var texts = textFunc(this.props.label, 20).map((line, idx) => {
+    var texts = textFunc(this.props.label, 16).map((line, idx) => {
       var textProps = {
         fontSize : fontSize,
         x : 0,
@@ -380,7 +401,7 @@ class BarFrame extends React.Component {
         x : g.scale.range()[0] - 1,
         y : 40
       }
-      return (<text {...textProps}>’000</text>);
+      return (<text {...textProps}>{g.note}</text>);
     });
 
     var headerProps = {
@@ -418,14 +439,16 @@ var rawGroups = {
     groupKey : 'asylum',
     dataKey : ['total', 'positive'],
     scale : fullScale,
-    colour : [colours.blue[3], colours.red[0]]
+    colour : [colours.blue[3], colours.red[0]],
+    note : '’000'
   },
   asylumPositive : {
     label: 'Positive asylum decisions',
     groupKey : 'asylum',
     dataKey : 'positive',
     scale : positiveScale,
-    colour: colours.red[0]
+    colour: colours.red[0],
+    note : '’000, Oct 2014–Sep 2015'
   },
   reloc : {
     label: 'Allotted relocations',
@@ -439,13 +462,15 @@ var rawGroups = {
       'NONEU'  : (<text y="12" x="2" className="reloc-note" fill={colours.grey[5]}>Not an EU member</text>),
       'SUPPLY' : (<text y="12" x="2" className="reloc-note" fill={colours.aquamarine[0]}>Supplying refugees</text>),
       'EXEMPT' : (<text y="12" x="2" className="reloc-note" fill={colours.red[2]}>Exempt by treaty</text>)
-    }
+    },
+    note : '’000'
   },
   resettle : {
     label: 'Resettlements*',
     dataKey : 'resettlement',
     scale : resettleScale,
-    colour : colours.yellow[1]
+    colour : colours.yellow[1],
+    note : '’000'
   }
 }
 var stepGroups = {
@@ -454,7 +479,7 @@ var stepGroups = {
   resettle : [ rawGroups.asylumPositive, rawGroups.reloc, rawGroups.resettle ]
 };
 var stepLabels = {
-  reloc : 'Applications and potential relocations',
+  reloc : 'Acceptances and potential relocations',
   resettle : 'Agreed resettlements'
 };
 
@@ -538,16 +563,12 @@ class Chart extends ChartContainer {
       action : (v) => { store.dispatch(updateStepperValue(v)); }
     };
 
-    var notes = (
-      <span className="note">* Both EU allotted and nationally pledged resettlements. May include some double counting.</span>
-    )
-
     return(
       <div className='chart-container'>
         <Header title="European migrant crisis guide"/>
         <Stepper {...stepperProps} />
         <MigrationFSM />
-        <Footer sources={['Eurostat', 'Frontex', 'The Economist']} sourceItal={[false,false,true]} notes={notes}/>
+        <Footer sources={['Eurostat', 'Frontex', 'The Economist']} sourceItal={[false,false,true]}/>
         <Tooltip bottomAnchor={true} />
       </div>
     );
