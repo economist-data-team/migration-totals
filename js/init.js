@@ -120,16 +120,16 @@ var steps = [
     like Norway). The number each country must accept is calculated
     according to economic performance, population and previous
     asylum efforts. Relocations began in October last year.
-</div>), '4'
-  ),
-  new Step('resettle', (<div>
-    <h4>Resettlement pledges</h4>
-    Most EU countries have also agreed to resettle refugees directly
-    from countries like Turkey, Jordan and Lebanon, as well as some
-    camps in Africa. An EU-wide scheme agreed in 2015 was limited to
-    22,000 refugees; a bigger proposal will be put forward this
-    year.</div>), '5'
-  )
+    </div>), '4'
+  )//,
+  // new Step('resettle', (<div>
+  //   <h4>Resettlement pledges</h4>
+  //   Most EU countries have also agreed to resettle refugees directly
+  //   from countries like Turkey, Jordan and Lebanon, as well as some
+  //   camps in Africa. An EU-wide scheme agreed in 2015 was limited to
+  //   22,000 refugees; a bigger proposal will be put forward this
+  //   year.</div>), '5'
+  // )
 ];
 
 // Time format function
