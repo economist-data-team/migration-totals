@@ -3,6 +3,26 @@ import BoundedSVG from './bounded-svg.js';
 import { Im, generateTranslateString } from './utilities.js';
 import colours from './econ_colours.js';
 
+export function textFunc(text, characters) {
+  var _texts = [];
+
+  var _words = text.split(' ');
+
+  while(_words.join(' ').length > characters) {
+    let nextLine = [];
+    while(nextLine.join(' ').length < characters) {
+      nextLine.push(_words.shift());
+    }
+    if(nextLine.join(' ').length > characters) {
+      _words.unshift(nextLine.pop());
+    }
+    _texts.push(nextLine);
+  }
+
+  _texts.push(_words);
+  return _texts;
+}
+
 export default class ChartLegend extends BoundedSVG {
   static get defaultProps() {
     return Im.extend(super.defaultProps, {
@@ -11,6 +31,7 @@ export default class ChartLegend extends BoundedSVG {
       gap: 20,
       fontSize : 14,
       legendLabel : "The label",
+      legendSublabel : null,
       legendItems : [
         { colour : 'red', label : 'One' },
         { colour : 'blue', label : 'Two' }
@@ -36,11 +57,20 @@ export default class ChartLegend extends BoundedSVG {
 
     texts.push(words);
 
-   var textElements = texts.map((line, idx) => {
-    return (<text className="label-group" x={this.leftBound} y={(idx + 1) * (this.props.fontSize * 1.2) + this.topBound} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
-       });
+    var textElements = texts.map((line, idx) => {
+      return (<text className="label-group" x={this.leftBound} y={(idx + 1) * (this.props.fontSize * 1.2) + this.topBound} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
+    });
 
-    return(<g transform={generateTranslateString(0, -1 * this.props.fontSize * (textElements.length - 1) - 3)}>{textElements}</g>);
+    var subtextElements = this.props.legendSublabel ?
+      textFunc(this.props.legendSublabel, characters).map((line, idx) => {
+        return (<text className="label-group-subtitle" x={this.leftBound} y={(idx + textElements.length + 1) * (this.props.fontSize * 1.2) + this.topBound} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
+      }) :
+      [];
+
+    return(<g transform={generateTranslateString(0, -1 * this.props.fontSize * ((textElements.length + subtextElements.length) - 1) - 5)}>
+      {textElements}
+      {subtextElements}
+    </g>);
   }
 
   render() {
