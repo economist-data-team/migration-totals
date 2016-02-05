@@ -499,6 +499,9 @@ class MigrationFSMRaw extends React.Component {
       nodeWidth : 20
     };
     return (<div>
+      <svg height="40" width="595">
+        <ChartLabel text="European asylum-seeker decisions" width="250"/>
+      </svg>
       <Sankey {...sankeyProps} />
     </div>);
   }
