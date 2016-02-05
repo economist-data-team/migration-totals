@@ -1,6 +1,7 @@
 import d3 from 'd3';
 import React from 'react';
 import BoundedSVG from './bounded-svg.js';
+import ChartLabel from './chart-label.js';
 import { generateTranslateString } from './utilities.js';
 
 var numberFormat = d3.format(',');
@@ -215,6 +216,9 @@ export default class MigrantRoutesMap extends React.Component {
     return (<svg width="575" height="442" viewBox="0 0 332 255" className="migrant-euromap">
       <g id="BKGD">
         <rect x="0" y="0" fill="#FFFFFF" width="332" height="255"/>
+      </g>
+      <g transform="scale(0.577391304) translate(-10,-10)">
+        <ChartLabel text="Main routes of migration" subtitle="Detected illegal border crossings, 2015" />
       </g>
       <g id="MAP_2">
         <g id="Map">

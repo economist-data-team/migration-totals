@@ -23,6 +23,7 @@ export default class Stepper extends React.Component {
       new Step('bar', 'Lorem ipsum bar baz biz')
     ];
     return {
+      showNext : true,
       items : items,
       action : (v) => { console.log(v); },
       value : items[0].value
@@ -62,6 +63,7 @@ export default class Stepper extends React.Component {
     this.props.action(this.nextItem.value);
   }
   render() {
+    var nextBlock = this.props.showNext ? (<Option title="Next" classNames={nextClass} action={this.switchNext} />) : null;
     var prevClass = ['advancer'], nextClass = ['advancer'];
     if(!this.prevItem) { prevClass.push('disabled'); }
     if(!this.nextItem) { nextClass.push('disabled'); }
@@ -71,7 +73,7 @@ export default class Stepper extends React.Component {
         <div className='stepper-text'>{this.activeItem.text}</div>
         <ul className="tab-bar stepper-tabs">
           {this.itemElements}
-          <Option title="Next" classNames={nextClass} action={this.switchNext} />
+          {nextBlock}
         </ul>
       </div>
     );

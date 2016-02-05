@@ -93,33 +93,36 @@ var Tooltip = connect(function(state) {
 })(TooltipRaw);
 
 var steps = [
-  new Step('apps', (<span>
+  new Step('apps', (<div>
+    <h4>This is a header</h4>
     Asylum claims to European Union countries are at their highest
     since records began. Around one-quarter of this year’s applicants
     are Syrian. But Iraqis and Afghans fleeing war and poverty also
     account for a large share, as do largely economic migrants from
     Balkan countries like Kosovo and Albania. Around one-third of
-    claims this year have been made in Germany.</span>), '1'
+    claims this year have been made in Germany.</div>), '1'
   ),
-  new Step('sankey', <span>Sankey sankey sankey</span>, '2'),
-  // new Step('recog', (<span>
+  new Step('sankey', <div>
+    <h4>Header</h4>
+    Sankey sankey sankey</div>, '2'),
+  // new Step('recog', (<div>
   //   But not all of these asylum seekers will make it in. Recognition rates vary from country
-  //   to country.</span>), '2'
+  //   to country.</div>), '2'
   // ),
-  new Step('reloc', (<span>
+  new Step('reloc', (<div>
     Under a controversial plan agreed earlier this year, up to 160,000
     asylum-seekers from Syria, Eritrea and Iraq who reach Italy and
     Greece will be relocated to most other EU countries (and some,
     like Norway, that are outside the club). The number each country
     must accept is calculated according to economic performance,
     population and previous asylum efforts. Relocations began in
-    October.  </span>), '3'
+    October.  </div>), '3'
   ),
-  new Step('resettle', (<span>
+  new Step('resettle', (<div>
     Most EU countries have also agreed to resettle refugees directly
     from countries like Turkey, Jordan and Lebanon, as well as some
     camps in Africa. An EU-wide scheme agreed this year was limited to
-    22,000 refugees; a bigger proposal will be put forward in 2016.</span>), '4'
+    22,000 refugees; a bigger proposal will be put forward in 2016.</div>), '4'
   )
 ];
 
@@ -286,10 +289,10 @@ class MigrationColumnHeaderRaw extends BoundedSVG {
       if(gr.label.push) {
         // it's an array!
         label = gr.label.map((l, idx) => {
-          var tspanProps = {
+          var tspanProps = Im.extend({
             key : gr.dataKey[idx],
             fill : gr.colour[idx]
-          };
+          }, l.attrs);
           return (<tspan {...tspanProps}><tspan>{l}</tspan><tspan> </tspan></tspan>)
         });
       } else {
@@ -404,6 +407,9 @@ var rawGroups = {
   },
   reloc : {
     label: 'Allotted relocations',
+    labelAttr : {
+      letterSpacing : -0.2
+    },
     dataKey : 'relocation',
     scale : relocScale,
     colour: colours.aquamarine[0],
@@ -414,10 +420,10 @@ var rawGroups = {
     }
   },
   resettle : {
-    label: 'Resettlements',
+    label: 'Resettlements*',
     dataKey : 'resettlement',
     scale : resettleScale,
-    colour : colours.yellow[0]
+    colour : colours.yellow[1]
   }
 }
 var stepGroups = {
@@ -461,8 +467,8 @@ class MigrationFSMRaw extends React.Component {
       nodeWidth : 20
     };
     return (<div>
-      <Sankey {...sankeyProps} />
       <MigrantRoutesMap/>
+      <Sankey {...sankeyProps} />
     </div>);
   }
 
@@ -491,16 +497,21 @@ var MigrationFSM = connectMap({
 class Chart extends ChartContainer {
   render() {
     var stepperProps = {
+      showNext : false,
       items : steps,
       action : (v) => { store.dispatch(updateStepperValue(v)); }
     };
+
+    var notes = (
+      <span className="note">* Both EU allotted and nationally pledged resettlements. May include some double counting.</span>
+    )
 
     return(
       <div className='chart-container'>
         <Header title="European migrant crisis guide"/>
         <Stepper {...stepperProps} />
         <MigrationFSM />
-        <Footer sources={['Eurostat', 'Frontex', 'The Economist']} sourceItal={[false,false,true]}/>
+        <Footer sources={['Eurostat', 'Frontex', 'The Economist']} sourceItal={[false,false,true]} notes={notes}/>
         <Tooltip bottomAnchor={true} />
       </div>
     );
@@ -540,9 +551,9 @@ d3.csv('./data/countries.csv', function(error, data) {
     return d;
   }).sort((a,b) => {
     // sort NA's to the bottom
-    if(a.total === 'NA') { return 1; }
-    if(b.total === 'NA') { return -1; }
-    return b.total - a.total;
+    if(a.positive === 'NA') { return 1; }
+    if(b.positive === 'NA') { return -1; }
+    return b.positive - a.positive;
   });
 
   // now we're going to recalculate some scales...
