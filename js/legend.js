@@ -36,9 +36,11 @@ export default class ChartLegend extends BoundedSVG {
 
     texts.push(words);
 
-   return texts.map((line, idx) => {
+   var textElements = texts.map((line, idx) => {
     return (<text className="label-group" x={this.leftBound} y={(idx + 1) * (this.props.fontSize * 1.2) + this.topBound} fontSize={this.props.fontSize}>{line.join(' ')}</text>);
        });
+
+    return(<g transform={generateTranslateString(0, -1 * this.props.fontSize * (textElements.length - 1) - 3)}>{textElements}</g>);
   }
 
   render() {

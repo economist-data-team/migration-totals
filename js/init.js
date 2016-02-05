@@ -240,7 +240,8 @@ class ColumnFrame extends React.Component {
     var legendProps = {
       margin : [290, 10, 10, 20],
       height : 400,
-      legendLabel : 'Acceptance Rate',
+      width : 110,
+      legendLabel : 'Acceptance rate, September 2015',
       legendItems : [
         { colour : colours.red[1], label : 'over 75%' },
         { colour : colours.blue[3], label : '50-75%' },
