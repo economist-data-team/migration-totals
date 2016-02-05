@@ -342,6 +342,16 @@ class BarFrame extends React.Component {
       return (<AxisRaw {...axisProps} />);
     });
 
+    var thousandsLabels = this.props.groups.map((g,idx) => {
+      var textProps = {
+        fontSize : 13,
+        fontStyle : 'italic',
+        x : g.scale.range()[0] - 1,
+        y : 40
+      }
+      return (<text {...textProps}>’000</text>);
+    });
+
     var headerProps = {
       groups : this.props.groups
     };
@@ -356,7 +366,7 @@ class BarFrame extends React.Component {
     return(<div>
       <svg width="595" height={axisHeight}>
         <MigrationColumnHeader {...headerProps} />
-        <text x={fullScale.range()[0] - 1} y="40" fontSize="13" fontStyle="italic">’000</text>
+        {thousandsLabels}
         {axes}
       </svg>
       <MigrationBarsRaw {...props}/>
@@ -386,7 +396,7 @@ var rawGroups = {
     colour: colours.red[0]
   },
   reloc : {
-    label: 'Alloted relocations',
+    label: 'Allotted relocations',
     dataKey : 'relocation',
     scale : relocScale,
     colour: colours.aquamarine[0],
