@@ -263,7 +263,7 @@ class ColumnFrame extends React.Component {
       height : 400,
       width : 110,
       legendLabel : 'Acceptance rate',
-      legendSublabel : 'October 2014 - September 2015',
+      legendSublabel : '2015',
       legendItems : [
         { colour : colours.red[1], label : 'over 75%' },
         { colour : colours.blue[3], label : '50-75%' },
@@ -287,7 +287,7 @@ class ColumnFrame extends React.Component {
         </g>
       </svg>
       <svg width="595" height="400">
-        <ChartLabel text="Asylum applications to Europe" subtitle="October 2014 - October 2015" />
+        <ChartLabel text="Asylum applications to Europe" subtitle="2015" />
         <ChartLegend {...legendProps} />
         <Treemap {...treemapProps} />
       </svg>
@@ -449,7 +449,7 @@ var rawGroups = {
     dataKey : 'positive',
     scale : positiveScale,
     colour: colours.red[0],
-    note : '’000, Oct 2014–Sep 2015'
+    note : '’000, 2015'
   },
   reloc : {
     label: 'Allotted relocations',
